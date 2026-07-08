@@ -1,0 +1,39 @@
+enum Role {
+    TENANT
+    LANDLORD
+    ADMIN
+}
+
+enum CategoryType {
+    APARTMENT
+    HOUSE
+    STUDIO
+}
+
+enum RentRequestStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+enum PaymentMethodProvider {
+    STRIPE
+    SSLCOMMERZ
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+}
+
+enum UserStatus {
+    ACTIVE
+    BANNED
+}
+
+enum AvailabilityStatus {
+    Available
+    RENTED 
+    UNAVAILABLE
+}

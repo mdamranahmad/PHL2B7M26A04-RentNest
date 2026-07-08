@@ -1,0 +1,25 @@
+model User {
+    id String @id @default(uuid())
+    name String @db.VarChar(255)
+    email String @unique @db.VarChar(100) 
+    passwordHash String
+
+    age Int? 
+    contactNo String? @db.VarChar(20)
+    profilePhoto String?
+
+    role Role
+    status UserStatus @default(ACTIVE)
+
+    // Relations
+    tenantRequests RentalRequest[] @relation("RentalRequestByTenant")
+    landLordRequests RentalRequest[] @relation("RentalRequestToLandLord")
+    reviews Review[]
+    properties Property[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([contactNo])
+    @@map("users")
+}
