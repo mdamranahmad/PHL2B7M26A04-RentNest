@@ -2,10 +2,13 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import config from "./config";
 import cookieParser from "cookie-parser";
+import { authRoutes } from "./modules/auth/auth.route";
 
 const app: Application = express();
 
+// =================================================
 // Middlewares
+// =================================================
 app.use(
     cors(
         //  Cross-Origin Resource Sharing
@@ -27,16 +30,13 @@ app.use(
 
 app.use(cookieParser()); // Reads active JWT tokens, populates req.cookies
 
+// =====================================================
+// App Routes
+// =====================================================
+
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
 });
+app.use("/api/auth", authRoutes);
 
 export default app;
-
-// import express, { Application } from "express";
-
-// const app: Application = express();
-
-// app.get("/", () => {});
-
-// export default app;
