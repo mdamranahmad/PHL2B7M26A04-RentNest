@@ -7,6 +7,7 @@ import httpstatus from "http-status";
 const registerUser = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
 
+    // register and fetch registered userdata from database
     const user = await authService.registerUser(payload);
 
     sendResponse(res, {
@@ -17,9 +18,24 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// const loginUser = catchAsync(async (req: Request, res: Response) => {
+//     const payload = req.body;
+
+//     // validation of credential and fetch data from database
+//     const user = await authService.loginUser(payload);
+
+//     sendResponse(res, {
+//         success: true,
+//         statusCode: httpstatus.OK,
+//         message: "User Login Successfull",
+//         data: user,
+//     });
+// });
+
 // const registerUser = catchAsync(async () => {});
 // const registerUser = catchAsync(async () => {});
 
 export const authController = {
     registerUser,
+    // loginUser,
 };

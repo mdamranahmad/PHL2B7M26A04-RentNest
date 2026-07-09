@@ -3,6 +3,8 @@ import cors from "cors";
 import config from "./config";
 import cookieParser from "cookie-parser";
 import { authRoutes } from "./modules/auth/auth.route";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { notFound } from "./middlewares/notFound";
 
 const app: Application = express();
 
@@ -38,5 +40,11 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
 });
 app.use("/api/auth", authRoutes);
+
+// Implementation of middleware for url Not Found
+app.use(notFound);
+
+// Implementation of global error handler
+app.use(globalErrorHandler);
 
 export default app;

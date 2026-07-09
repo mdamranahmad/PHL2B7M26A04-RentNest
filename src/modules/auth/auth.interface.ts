@@ -14,3 +14,8 @@ export interface IUser {
     reviews?: string;
     properties?: string;
 }
+
+export interface ILoginUser {
+    email: string;
+    password: string;
+}
