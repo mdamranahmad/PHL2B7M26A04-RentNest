@@ -1,12 +1,14 @@
-interface IUser {
+import { Role, UserStatus } from "../../../generated/prisma/enums";
+
+export interface IUser {
     name: string;
     email: string;
     password: string;
     age?: number;
     contactNo?: string;
     profilePhoto?: string;
-    role: string;
-    status?: string;
+    role: Role;
+    status?: UserStatus;
     tenantRequests?: string;
     landLordRequests?: string;
     reviews?: string;
