@@ -4,6 +4,8 @@ import { AppError } from "../../middlewares/appError";
 import { ILoginUser, IUser } from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
+import { jwtUtils } from "../../utils/jwt";
+import { SignOptions } from "jsonwebtoken";
 
 // ================================================================
 // A function to register user into the system
@@ -48,14 +50,54 @@ const registerUser = async (payload: IUser) => {
     return user;
 };
 
-// // ================================================================
-// // A function to login user into the system
-// // ================================================================
-// const loginUser = async (payload: ILoginUser) => {
-//     const { email, password } = payload;
-// };
+// ================================================================
+// A function to login user into the system
+// ================================================================
+const loginUser = async (payload: ILoginUser) => {
+    const { email, password } = payload;
+
+    // Check if the user exists
+    const user = await prisma.user.findUniqueOrThrow({
+        where: { email },
+    });
+
+    // Check if the User have proper credentials
+    const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
+
+    if (!isPasswordMatch) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "Invaild Credentials");
+    }
+
+    // Check if the user has proper access
+    if (user.status === "BANNED") {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Suspended");
+    }
+
+    const tokenPayload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+    };
+
+    // Generation of Access Token
+    const accessToken = jwtUtils.createToken(
+        tokenPayload,
+        config.jet_secret_key,
+        config.jet_secret_key_expires_in as SignOptions,
+    );
+
+    // Generation of Refresh Token
+    const refreshToken = jwtUtils.createToken(
+        tokenPayload,
+        config.jet_refresh_secret_key,
+        config.jet_refresh_secret_key_expires_in as SignOptions,
+    );
+
+    return { accessToken, refreshToken };
+};
 
 export const authService = {
     registerUser,
-    // loginUser,
+    loginUser,
 };

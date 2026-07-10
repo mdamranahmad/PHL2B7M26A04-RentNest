@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { authService } from "./auth.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpstatus from "http-status";
+import config from "../../config";
 
 const registerUser = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
@@ -18,24 +19,40 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// const loginUser = catchAsync(async (req: Request, res: Response) => {
-//     const payload = req.body;
+const loginUser = catchAsync(async (req: Request, res: Response) => {
+    const payload = req.body;
 
-//     // validation of credential and fetch data from database
-//     const user = await authService.loginUser(payload);
+    // validation of credential and fetch data from database
+    const { accessToken, refreshToken } = await authService.loginUser(payload);
 
-//     sendResponse(res, {
-//         success: true,
-//         statusCode: httpstatus.OK,
-//         message: "User Login Successfull",
-//         data: user,
-//     });
-// });
+    // Storage of accessToken in browser cookies
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: config.node_env === "production",
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    // Storage of refreshToken in browser cookies
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: config.node_env === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "User Login Successfull",
+        data: { accessToken, refreshToken },
+    });
+});
 
 // const registerUser = catchAsync(async () => {});
 // const registerUser = catchAsync(async () => {});
 
 export const authController = {
     registerUser,
-    // loginUser,
+    loginUser,
 };
