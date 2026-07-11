@@ -5,6 +5,10 @@ import cookieParser from "cookie-parser";
 import { authRoutes } from "./modules/auth/auth.route";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
+import { landlordRoutes } from "./modules/landlord/landlord.route";
+import { auth } from "./middlewares/auth";
+import { Role } from "../generated/prisma/enums";
+import { categoriesRoutes } from "./modules/categories/categories.route";
 
 const app: Application = express();
 
@@ -40,6 +44,8 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
 });
 app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoriesRoutes);
+app.use("/api/landlord", landlordRoutes);
 
 // Implementation of middleware for url Not Found
 app.use(notFound);

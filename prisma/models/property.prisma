@@ -1,27 +1,27 @@
 model Property {
-    id String @id @default(uuid())
-    title String
-    description String
-    location String 
-    price Decimal @db.Decimal(10, 2)
-    amenities String[]
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  location    String
+  price       Decimal  @db.Decimal(10, 2)
+  amenities   String[]
 
-    isAvailable AvailabilityStatus @default(Available)
+  isAvailable AvailabilityStatus @default(Available)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Relations
-    categoryId String
-    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-    
-    landLordId String
-    landLord User @relation(fields: [landLordId], references: [id], onDelete: Cascade)
+  // Relations
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-    rentalRequests RentalRequest[]
+  landLordId String
+  landLord   User   @relation(fields: [landLordId], references: [id], onDelete: Cascade)
 
-    reviews Review[]
-    
-    @@index([location, price])
-    @@map("properties")    
+  rentalRequests RentalRequest[]
+
+  reviews Review[]
+
+  @@index([location, price])
+  @@map("properties")
 }

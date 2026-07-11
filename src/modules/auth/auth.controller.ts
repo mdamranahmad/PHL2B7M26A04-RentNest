@@ -5,6 +5,9 @@ import { sendResponse } from "../../utils/sendResponse";
 import httpstatus from "http-status";
 import config from "../../config";
 
+// ================================================================
+// A function to register user into the system
+// ================================================================
 const registerUser = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
 
@@ -19,6 +22,9 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// ================================================================
+// A function to login user into the system
+// ================================================================
 const loginUser = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
 
@@ -49,6 +55,9 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// ================================================================
+// A function to fetch user profile from the database
+// ================================================================
 const getProfile = catchAsync(async (req: Request, res: Response) => {
     const profile = await authService.getProfile(req.user?.id as string);
 

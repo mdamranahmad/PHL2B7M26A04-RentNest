@@ -24,6 +24,7 @@ declare global {
 export const auth = (...requiredRoles: Role[]) => {
     return catchAsync(
         async (req: Request, res: Response, next: NextFunction) => {
+            // Extract token from request cookies or authorization headers
             const token = req.cookies.accessToken
                 ? req.cookies.accessToken
                 : req.headers.authorization?.startsWith("Bearer ")
@@ -37,16 +38,19 @@ export const auth = (...requiredRoles: Role[]) => {
                 );
             }
 
+            // Verify and decode the token payload
             const varifiedToken = jwtUtils.tokenVerification(
                 token,
                 config.jwt_secret_key,
             );
 
-            console.log(varifiedToken);
+            // console.log(varifiedToken);
 
             const { id, name, email, role } = varifiedToken as JwtPayload;
 
-            if (!requiredRoles.length && !requiredRoles.includes(role)) {
+            // console.log("Required Roles: ", requiredRoles);
+
+            if (requiredRoles.length && !requiredRoles.includes(role)) {
                 throw new AppError(
                     httpStatus.FORBIDDEN,
                     "Access denied. You do not have the required role to perform this action.",

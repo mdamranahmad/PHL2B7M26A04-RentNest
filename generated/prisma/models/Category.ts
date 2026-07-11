@@ -169,12 +169,12 @@ export type CategoryOrderByWithRelationInput = {
 
 export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  categoryType?: $Enums.CategoryType
   AND?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
-  categoryType?: Prisma.EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
   properties?: Prisma.PropertyListRelationFilter
-}, "id">
+}, "id" | "categoryType">
 
 export type CategoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
