@@ -49,10 +49,22 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// const registerUser = catchAsync(async () => {});
-// const registerUser = catchAsync(async () => {});
+const getProfile = catchAsync(async (req: Request, res: Response) => {
+    const profile = await authService.getProfile(req.user?.id as string);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "User Profile Fetched Successfully",
+        data: profile,
+    });
+});
+
+// const registerUser = catchAsync(async (async (req: Request, res: Response) => {});
+// const registerUser = catchAsync(async (async (req: Request, res: Response) => {});
 
 export const authController = {
     registerUser,
     loginUser,
+    getProfile,
 };

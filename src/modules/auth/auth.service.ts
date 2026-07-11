@@ -83,21 +83,43 @@ const loginUser = async (payload: ILoginUser) => {
     // Generation of Access Token
     const accessToken = jwtUtils.createToken(
         tokenPayload,
-        config.jet_secret_key,
-        config.jet_secret_key_expires_in as SignOptions,
+        config.jwt_secret_key,
+        config.jwt_secret_key_expires_in as SignOptions,
     );
 
     // Generation of Refresh Token
     const refreshToken = jwtUtils.createToken(
         tokenPayload,
-        config.jet_refresh_secret_key,
-        config.jet_refresh_secret_key_expires_in as SignOptions,
+        config.jwt_refresh_secret_key,
+        config.jwt_refresh_secret_key_expires_in as SignOptions,
     );
 
     return { accessToken, refreshToken };
 };
 
+// ================================================================
+// A function to fetch user profile from the database
+// ================================================================
+const getProfile = async (userId: string) => {
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            id: userId,
+        },
+        omit: {
+            passwordHash: true,
+        },
+        include: {
+            properties: true,
+            landLordRequests: true,
+            tenantRequests: true,
+            reviews: true,
+        },
+    });
+    return user;
+};
+
 export const authService = {
     registerUser,
     loginUser,
+    getProfile,
 };
