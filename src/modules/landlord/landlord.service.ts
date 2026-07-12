@@ -1,8 +1,113 @@
-const createProperties = async (req: Request, res: Response) => {};
+import { prisma } from "../../lib/prisma";
+import { AppError } from "../../middlewares/appError";
+import { IProperties, IUpdateProperties } from "./landlord.interface";
+import httpStatus from "http-status";
 
-// const createProperties = async (req: Request, res: Response) => {};
-// const createProperties = async (req: Request, res: Response) => {};
+// ================================================================
+// A function to create property into the system
+// ================================================================
+const createProperties = async (payload: IProperties, landLordId: string) => {
+    // Payload Destructure
+    const {
+        title,
+        description,
+        location,
+        price,
+        amenities,
+        category,
+        isAvailable,
+    } = payload;
 
-export const propertiesService = {
+    // Check if user exists
+    const isUserExists = await prisma.user.findUniqueOrThrow({
+        where: { id: landLordId },
+    });
+
+    // Find category for new property
+    const findCategory = await prisma.category.findUniqueOrThrow({
+        where: { categoryType: category },
+    });
+
+    // Create new properties in database
+    const createdProperties = await prisma.property.create({
+        data: {
+            title,
+            description,
+            location,
+            price,
+            amenities,
+            categoryId: findCategory.id,
+            isAvailable,
+            landLordId,
+        },
+    });
+
+    return createdProperties;
+};
+
+// ================================================================
+// A function to update property listings into the system
+// ================================================================
+const updateProperties = async (
+    payload: IUpdateProperties,
+    id: string,
+    landLordId: string,
+) => {
+    // check if property exists
+    const isPropertyExists = await prisma.property.findUniqueOrThrow({
+        where: { id },
+    });
+
+    const userRole = await prisma.user.findUnique({
+        where: {
+            id: isPropertyExists.landLordId,
+        },
+        select: {
+            role: true,
+        },
+    });
+
+    // Check if user is the owner or admin
+
+    console.log("isPropertyExists.landLordId: ", isPropertyExists.landLordId);
+    console.log("landLordId: ", landLordId);
+    if (
+        isPropertyExists.landLordId === landLordId ||
+        userRole?.role === "ADMIN"
+    ) {
+        const updatedProperty = await prisma.property.update({
+            where: { id },
+            data: { ...payload },
+        });
+
+        return updatedProperty;
+    } else {
+        throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access.");
+    }
+};
+
+// ================================================================
+// A function to delete property listings into the system
+// ================================================================
+const deleteProperties = async (req: Request, res: Response) => {};
+
+// ================================================================
+// A function to show rental requests for specific property listings in the system
+// ================================================================
+const rentalRequestForProperties = async (req: Request, res: Response) => {};
+
+// ================================================================
+// A function to handle rental requests for  property listings in the system
+// ================================================================
+const rentalRequestApprovalForProperties = async (
+    req: Request,
+    res: Response,
+) => {};
+
+export const landlordService = {
     createProperties,
+    updateProperties,
+    deleteProperties,
+    rentalRequestForProperties,
+    rentalRequestApprovalForProperties,
 };
