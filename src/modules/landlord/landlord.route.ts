@@ -10,9 +10,12 @@ router.use(auth(Role.ADMIN, Role.LANDLORD));
 
 router.post("/properties", landlordController.createProperties);
 router.put("/properties/:id", landlordController.updateProperties);
-router.post("/properties/:id", landlordController.deleteProperties);
-router.post("/requests", landlordController.rentalRequestForProperties);
-router.post(
+router.delete("/properties/:id", landlordController.deleteProperties);
+
+
+// Pending Implementation Routes
+router.get("/requests", landlordController.rentalRequestForProperties);
+router.patch(
     "/requests/:id",
     landlordController.rentalRequestApprovalForProperties,
 );

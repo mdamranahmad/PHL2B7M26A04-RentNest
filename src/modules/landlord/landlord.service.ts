@@ -1,3 +1,4 @@
+import { Role } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import { IProperties, IUpdateProperties } from "./landlord.interface";
@@ -19,7 +20,7 @@ const createProperties = async (payload: IProperties, landLordId: string) => {
     } = payload;
 
     // Check if user exists
-    const isUserExists = await prisma.user.findUniqueOrThrow({
+    await prisma.user.findUniqueOrThrow({
         where: { id: landLordId },
     });
 
@@ -29,7 +30,7 @@ const createProperties = async (payload: IProperties, landLordId: string) => {
     });
 
     // Create new properties in database
-    const createdProperties = await prisma.property.create({
+    return await prisma.property.create({
         data: {
             title,
             description,
@@ -41,8 +42,6 @@ const createProperties = async (payload: IProperties, landLordId: string) => {
             landLordId,
         },
     });
-
-    return createdProperties;
 };
 
 // ================================================================
@@ -52,45 +51,49 @@ const updateProperties = async (
     payload: IUpdateProperties,
     id: string,
     landLordId: string,
+    role: Role,
 ) => {
     // check if property exists
     const isPropertyExists = await prisma.property.findUniqueOrThrow({
         where: { id },
     });
 
-    const userRole = await prisma.user.findUnique({
-        where: {
-            id: isPropertyExists.landLordId,
-        },
-        select: {
-            role: true,
-        },
-    });
-
-    // Check if user is the owner or admin
-
-    console.log("isPropertyExists.landLordId: ", isPropertyExists.landLordId);
-    console.log("landLordId: ", landLordId);
-    if (
-        isPropertyExists.landLordId === landLordId ||
-        userRole?.role === "ADMIN"
-    ) {
-        const updatedProperty = await prisma.property.update({
+    if (isPropertyExists.landLordId === landLordId || role === "ADMIN") {
+        return await prisma.property.update({
             where: { id },
             data: { ...payload },
         });
-
-        return updatedProperty;
-    } else {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access.");
     }
+
+    throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You do not have permission to modify this property.",
+    );
 };
 
 // ================================================================
 // A function to delete property listings into the system
 // ================================================================
-const deleteProperties = async (req: Request, res: Response) => {};
+const deleteProperties = async (id: string, landLordId: string, role: Role) => {
+    // check if property exists
+    const isPropertyExists = await prisma.property.findUniqueOrThrow({
+        where: { id },
+    });
 
+    // Check if user is the owner or admin
+    if (isPropertyExists.landLordId === landLordId || role === "ADMIN") {
+        await prisma.property.delete({
+            where: { id },
+        });
+
+        return null;
+    }
+
+    throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You do not have permission to delete this property.",
+    );
+};
 // ================================================================
 // A function to show rental requests for specific property listings in the system
 // ================================================================

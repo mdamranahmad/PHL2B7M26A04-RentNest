@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { adminService } from "./admin.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import { AppError } from "../../middlewares/appError";
 
 // ================================================================
 // A function to get all user profiles from the system
@@ -24,9 +25,11 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
     const userId = req.params.id as string;
 
-    console.log("UserId: ", userId);
-
     const payload = req.body;
+
+    if (!payload.status) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Status Value Required!");
+    }
 
     const updatedUser = await adminService.updateUserStatus(payload, userId);
 

@@ -7,9 +7,9 @@ import httpStatus from "http-status";
 // A function to get all users profile from the system
 // ================================================================
 const getAllUsers = async () => {
-    const allUsers = await prisma.user.findMany();
-
-    return allUsers;
+    return await prisma.user.findMany({
+        omit: { passwordHash: true },
+    });
 };
 
 // ================================================================
@@ -19,41 +19,28 @@ const updateUserStatus = async (payload: IUpdateStatus, userId: string) => {
     const { status } = payload;
 
     // Check User Exists in the database
-    const isUserExists = await prisma.user.findUniqueOrThrow({
+    await prisma.user.findUniqueOrThrow({
         where: { id: userId },
     });
 
-    const updatedUser = await prisma.user.update({
+    return await prisma.user.update({
         where: { id: userId },
         data: { status },
     });
-
-    if (!updatedUser) {
-        throw new AppError(
-            httpStatus.INTERNAL_SERVER_ERROR,
-            "Something Went Wrong.",
-        );
-    }
-
-    return updatedUser;
 };
 
 // ================================================================
 // A function to get all properties from the system
 // ================================================================
 const getAllProperties = async () => {
-    const allProperties = await prisma.property.findMany();
-
-    return allProperties;
+    return await prisma.property.findMany();
 };
 
 // ================================================================
 // A function to get all rental requests from the system
 // ================================================================
 const getAllRentalRequests = async () => {
-    const allRentalRequests = await prisma.rentalRequest.findMany();
-
-    return allRentalRequests;
+    return await prisma.rentalRequest.findMany();
 };
 
 export const adminService = {
