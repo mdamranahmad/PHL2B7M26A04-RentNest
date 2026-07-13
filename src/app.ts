@@ -10,6 +10,9 @@ import { auth } from "./middlewares/auth";
 import { Role } from "../generated/prisma/enums";
 import { categoriesRoutes } from "./modules/categories/categories.route";
 import { adminRoutes } from "./modules/admin/admin.route";
+import { PropertyRoutes } from "./modules/properties/properties.route";
+import { adminController } from "./modules/admin/admin.controller";
+import { categoriesController } from "./modules/categories/categories.controller";
 
 const app: Application = express();
 
@@ -48,6 +51,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/landlord", landlordRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/properties", PropertyRoutes);
+app.get("/api/categories", categoriesController.getAllCategories);
 
 // Implementation of middleware for url Not Found
 app.use(notFound);
