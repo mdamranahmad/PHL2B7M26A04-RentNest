@@ -13,6 +13,7 @@ import { adminRoutes } from "./modules/admin/admin.route";
 import { PropertyRoutes } from "./modules/properties/properties.route";
 import { adminController } from "./modules/admin/admin.controller";
 import { categoriesController } from "./modules/categories/categories.controller";
+import { rentalRequestRoutes } from "./modules/rentals/rentals.route";
 
 const app: Application = express();
 
@@ -53,6 +54,7 @@ app.use("/api/landlord", landlordRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/properties", PropertyRoutes);
 app.get("/api/categories", categoriesController.getAllCategories);
+app.use("/api/rentals", rentalRequestRoutes);
 
 // Implementation of middleware for url Not Found
 app.use(notFound);
