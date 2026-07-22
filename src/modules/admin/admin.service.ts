@@ -9,6 +9,11 @@ import httpStatus from "http-status";
 const getAllUsers = async () => {
     return await prisma.user.findMany({
         omit: { passwordHash: true },
+        include: {
+            properties: {
+                select: { title: true, description: true, location: true },
+            },
+        },
     });
 };
 
@@ -17,11 +22,6 @@ const getAllUsers = async () => {
 // ================================================================
 const updateUserStatus = async (payload: IUpdateStatus, userId: string) => {
     const { status } = payload;
-
-    // Check User Exists in the database
-    await prisma.user.findUniqueOrThrow({
-        where: { id: userId },
-    });
 
     return await prisma.user.update({
         where: { id: userId },
@@ -33,14 +33,34 @@ const updateUserStatus = async (payload: IUpdateStatus, userId: string) => {
 // A function to get all properties from the system
 // ================================================================
 const getAllProperties = async () => {
-    return await prisma.property.findMany();
+    return await prisma.property.findMany({
+        include: {
+            category: { select: { categoryType: true } },
+            landLord: { select: { name: true } },
+            rentalRequests: {
+                select: {
+                    rentRequestStatus: true,
+                    tenant: { select: { name: true } },
+                },
+            },
+            reviews: { select: { id: true, rating: true, comment: true } },
+        },
+    });
 };
 
 // ================================================================
 // A function to get all rental requests from the system
 // ================================================================
 const getAllRentalRequests = async () => {
-    return await prisma.rentalRequest.findMany();
+    return await prisma.rentalRequest.findMany({
+        include: {
+            property: {
+                select: { title: true, description: true, location: true },
+            },
+            landLord: { select: { name: true, profilePhoto: true } },
+            tenant: { select: { name: true, profilePhoto: true } },
+        },
+    });
 };
 
 export const adminService = {
