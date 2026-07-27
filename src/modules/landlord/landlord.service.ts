@@ -5,6 +5,17 @@ import { IProperties, IUpdateProperties } from "./landlord.interface";
 import httpStatus from "http-status";
 
 // ================================================================
+// A function to fetch all proeprties for the user from the system
+// ================================================================
+const getAllPropertiesForUser = async (landLordId: string) => {
+    return await prisma.property.findMany({
+        where: {
+            landLordId,
+        },
+    });
+};
+
+// ================================================================
 // A function to create property into the system
 // ================================================================
 const createProperties = async (payload: IProperties, landLordId: string) => {
@@ -74,43 +85,131 @@ const updateProperties = async (
 // ================================================================
 // A function to delete property listings into the system
 // ================================================================
-const deleteProperties = async (id: string, landLordId: string, role: Role) => {
-    // check if property exists
-    const isPropertyExists = await prisma.property.findUniqueOrThrow({
-        where: { id },
-    });
-
-    // Check if user is the owner or admin
-    if (isPropertyExists.landLordId === landLordId || role === "ADMIN") {
-        await prisma.property.delete({
-            where: { id },
+const deleteProperties = async (id: string, landLordId: string) => {
+    return await prisma.$transaction(async (tx) => {
+        const property = await tx.property.findFirst({
+            where: {
+                id,
+                landLordId,
+            },
         });
 
-        return null;
-    }
+        if (!property) {
+            throw new AppError(
+                httpStatus.NOT_FOUND,
+                "Property not found or unauthorized access!",
+            );
+        }
 
-    throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        "You do not have permission to delete this property.",
-    );
+        if (property.isAvailable === "RENTED") {
+            throw new AppError(
+                httpStatus.BAD_REQUEST,
+                "Can not delete a rented property!",
+            );
+        }
+
+        await tx.rentalRequest.updateMany({
+            where: {
+                propertyId: id,
+                rentRequestStatus: "PENDING",
+            },
+            data: { rentRequestStatus: "REJECTED" },
+        });
+
+        await tx.property.updateMany({
+            where: { id },
+            data: { isAvailable: "UNAVAILABLE" },
+        });
+    });
 };
 // ================================================================
-// A function to show rental requests for specific property listings in the system
+// A function to show rental requests for all property listings for logged in user in the system
 // ================================================================
-const rentalRequestForProperties = async (req: Request, res: Response) => {};
+const rentalRequestsForLandlord = async (landLordId: string) => {
+    return await prisma.rentalRequest.findMany({
+        where: {
+            landLordId,
+        },
+        include: {
+            landLord: { select: { name: true } },
+            tenant: { select: { name: true } },
+            property: { select: { title: true, isAvailable: true } },
+        },
+    });
+};
 
 // ================================================================
 // A function to handle rental requests for  property listings in the system
 // ================================================================
-const rentalRequestApprovalForProperties = async (
-    req: Request,
-    res: Response,
-) => {};
+const updateRentRequestStatus = async (
+    id: string,
+    requestStatus: string,
+    landLordId: string,
+) => {
+    return await prisma.$transaction(async (tx) => {
+        const rentRequest = await tx.rentalRequest.findFirst({
+            where: {
+                id,
+                landLordId,
+                rentRequestStatus: "PENDING",
+            },
+        });
+
+        const isPropertyAvailable = await tx.property.findFirst({
+            where: {
+                id: rentRequest?.propertyId,
+                isAvailable: "Available",
+            },
+        });
+
+        if (!rentRequest || !isPropertyAvailable) {
+            throw new AppError(
+                httpStatus.NOT_FOUND,
+                "Rent request not found or unauthorized access!",
+            );
+        }
+
+        if (requestStatus == "REJECTED") {
+            await tx.property.update({
+                where: {
+                    id: rentRequest.propertyId,
+                },
+                data: { isAvailable: "Available" },
+            });
+
+            return await tx.rentalRequest.update({
+                where: {
+                    id,
+                },
+                data: {
+                    rentRequestStatus: "REJECTED",
+                },
+            });
+        }
+        if (requestStatus == "APPROVED") {
+            await tx.property.update({
+                where: {
+                    id: rentRequest.propertyId,
+                },
+                data: { isAvailable: "RENTED" },
+            });
+            return await tx.rentalRequest.update({
+                where: {
+                    id,
+                },
+                data: {
+                    rentRequestStatus: "APPROVED",
+                },
+            });
+        }
+    });
+};
 
 export const landlordService = {
     createProperties,
     updateProperties,
     deleteProperties,
-    rentalRequestForProperties,
-    rentalRequestApprovalForProperties,
+    rentalRequestsForLandlord,
+    updateRentRequestStatus,
+    getAllPropertiesForUser,
 };

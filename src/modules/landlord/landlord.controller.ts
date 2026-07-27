@@ -6,14 +6,29 @@ import httpStatus from "http-status";
 import { sendResponse } from "../../utils/sendResponse";
 
 // ================================================================
+// A function to get all property listings for user from the system
+// ================================================================
+
+const getAllPropertiesForUser = catchAsync(
+    async (req: Request, res: Response) => {
+        const landlordId = req.user?.id as string;
+
+        const proeprties =
+            await landlordService.getAllPropertiesForUser(landlordId);
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Properties Fetched Successfully",
+            data: proeprties,
+        });
+    },
+);
+// ================================================================
 // A function to create property into the system
 // ================================================================
 const createProperties = catchAsync(async (req: Request, res: Response) => {
-    if (!req.user) {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Authentication Required!");
-    }
-
-    const landlordId = req.user?.id;
+    const landlordId = req.user?.id as string;
 
     const payload = req.body;
 
@@ -34,10 +49,7 @@ const createProperties = catchAsync(async (req: Request, res: Response) => {
 // A function to update property listings into the system
 // ================================================================
 const updateProperties = catchAsync(async (req: Request, res: Response) => {
-    if (!req.user) {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Authentication Required!");
-    }
-    const { id, role } = req.user;
+    const { id, role } = req.user!;
 
     const propertyId = req.params.id as string;
 
@@ -62,14 +74,11 @@ const updateProperties = catchAsync(async (req: Request, res: Response) => {
 // A function to delete property listings into the system
 // ================================================================
 const deleteProperties = catchAsync(async (req: Request, res: Response) => {
-    if (!req.user) {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Authentication Required!");
-    }
-    const { id, role } = req.user;
+    const { id } = req.user!;
 
     const propertyId = req.params.id as string;
 
-    await landlordService.deleteProperties(propertyId, id, role);
+    await landlordService.deleteProperties(propertyId, id);
 
     sendResponse(res, {
         success: true,
@@ -79,23 +88,56 @@ const deleteProperties = catchAsync(async (req: Request, res: Response) => {
     });
 });
 // ================================================================
-// A function to show rental requests for specific property listings in the system
+//A function to show rental requests for all property listings for logged in user in the system
 // ================================================================
-const rentalRequestForProperties = catchAsync(
-    async (req: Request, res: Response) => {},
+const rentalRequestsForLandlord = catchAsync(
+    async (req: Request, res: Response) => {
+        const { id } = req.user!;
+
+        const rentalRequests =
+            await landlordService.rentalRequestsForLandlord(id);
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Rental request fetched successfully.",
+            data: rentalRequests,
+        });
+    },
 );
 
 // ================================================================
 // A function to handle rental requests for  property listings in the system
 // ================================================================
-const rentalRequestApprovalForProperties = catchAsync(
-    async (req: Request, res: Response) => {},
+const updateRentRequestStatus = catchAsync(
+    async (req: Request, res: Response) => {
+        const landLordId = req.user?.id!;
+
+        const id = req.params?.id as string;
+
+        const { rentRequestStatus } = req.body;
+
+        const updatedRequestStatus =
+            await landlordService.updateRentRequestStatus(
+                id,
+                rentRequestStatus,
+                landLordId,
+            );
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Rental request updated successfully.",
+            data: updatedRequestStatus,
+        });
+    },
 );
 
 export const landlordController = {
     createProperties,
     updateProperties,
     deleteProperties,
-    rentalRequestForProperties,
-    rentalRequestApprovalForProperties,
+    rentalRequestsForLandlord,
+    updateRentRequestStatus,
+    getAllPropertiesForUser,
 };

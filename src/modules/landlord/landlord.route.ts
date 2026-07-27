@@ -8,16 +8,14 @@ const router = Router();
 // Implementation of auth middleware to ensure only user with admin/landlord role have access to module routes
 router.use(auth(Role.ADMIN, Role.LANDLORD));
 
+router.get("/properties", landlordController.getAllPropertiesForUser);
 router.post("/properties", landlordController.createProperties);
 router.put("/properties/:id", landlordController.updateProperties);
 router.delete("/properties/:id", landlordController.deleteProperties);
-
-
-// Pending Implementation Routes
-router.get("/requests", landlordController.rentalRequestForProperties);
+router.get("/requests", landlordController.rentalRequestsForLandlord);
 router.patch(
     "/requests/:id",
-    landlordController.rentalRequestApprovalForProperties,
+    landlordController.updateRentRequestStatus,
 );
 
 export const landlordRoutes = router;
