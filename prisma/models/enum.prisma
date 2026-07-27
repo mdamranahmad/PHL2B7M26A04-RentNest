@@ -13,7 +13,12 @@ enum CategoryType {
 enum RentRequestStatus {
   PENDING
   APPROVED
+  PAYMENT_PENDING
   REJECTED
+  CANCELLED
+  RELEASED
+  EXPIRED
+  TERMINATED
 }
 
 enum PaymentMethodProvider {
@@ -34,6 +39,8 @@ enum UserStatus {
 
 enum AvailabilityStatus {
   Available
+  PENDING
+  WAITING
   RENTED
   UNAVAILABLE
 }

@@ -1,12 +1,11 @@
-// ================================================================
-// A function to submit a rental requests for  property listings in the system
-// ================================================================
-
 import { Role } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import httpStatus from "http-status";
 
+// ================================================================
+// A function to submit a rental requests for  property listings in the system
+// ================================================================
 const submitRentalRequest = async (propertyId: string, tenantId: string) => {
     await prisma.user.findUniqueOrThrow({
         where: { id: tenantId },
@@ -33,7 +32,7 @@ const submitRentalRequest = async (propertyId: string, tenantId: string) => {
 
         await tx.property.update({
             where: { id: propertyId },
-            data: { isAvailable: "UNAVAILABLE" },
+            data: { isAvailable: "PENDING" },
         });
         return await tx.rentalRequest.create({
             data: {
@@ -45,6 +44,7 @@ const submitRentalRequest = async (propertyId: string, tenantId: string) => {
         });
     });
 };
+
 // ================================================================
 // A function to get all rental requests for a tenant in the system
 // ================================================================

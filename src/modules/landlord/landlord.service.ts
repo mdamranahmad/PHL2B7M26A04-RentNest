@@ -146,6 +146,10 @@ const updateRentRequestStatus = async (
     requestStatus: string,
     landLordId: string,
 ) => {
+    if (!["APPROVED", "REJECTED"].includes(requestStatus)) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Invalid Status!");
+    }
+
     return await prisma.$transaction(async (tx) => {
         const rentRequest = await tx.rentalRequest.findFirst({
             where: {
@@ -155,14 +159,14 @@ const updateRentRequestStatus = async (
             },
         });
 
-        const isPropertyAvailable = await tx.property.findFirst({
+        const isPropertyPending = await tx.property.findFirst({
             where: {
                 id: rentRequest?.propertyId,
-                isAvailable: "Available",
+                isAvailable: "PENDING",
             },
         });
 
-        if (!rentRequest || !isPropertyAvailable) {
+        if (!rentRequest || !isPropertyPending) {
             throw new AppError(
                 httpStatus.NOT_FOUND,
                 "Rent request not found or unauthorized access!",
@@ -172,7 +176,7 @@ const updateRentRequestStatus = async (
         if (requestStatus == "REJECTED") {
             await tx.property.update({
                 where: {
-                    id: rentRequest.propertyId,
+                    id: rentRequest?.propertyId,
                 },
                 data: { isAvailable: "Available" },
             });
@@ -186,19 +190,20 @@ const updateRentRequestStatus = async (
                 },
             });
         }
+
         if (requestStatus == "APPROVED") {
             await tx.property.update({
                 where: {
                     id: rentRequest.propertyId,
                 },
-                data: { isAvailable: "RENTED" },
+                data: { isAvailable: "WAITING" },
             });
             return await tx.rentalRequest.update({
                 where: {
                     id,
                 },
                 data: {
-                    rentRequestStatus: "APPROVED",
+                    rentRequestStatus: "PAYMENT_PENDING",
                 },
             });
         }

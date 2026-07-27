@@ -30,7 +30,12 @@ export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]
 export const RentRequestStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  RELEASED: 'RELEASED',
+  EXPIRED: 'EXPIRED',
+  TERMINATED: 'TERMINATED'
 } as const
 
 export type RentRequestStatus = (typeof RentRequestStatus)[keyof typeof RentRequestStatus]
@@ -63,6 +68,8 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 export const AvailabilityStatus = {
   Available: 'Available',
+  PENDING: 'PENDING',
+  WAITING: 'WAITING',
   RENTED: 'RENTED',
   UNAVAILABLE: 'UNAVAILABLE'
 } as const
