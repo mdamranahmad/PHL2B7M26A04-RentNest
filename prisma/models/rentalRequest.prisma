@@ -6,6 +6,9 @@ model RentalRequest {
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
+  // Rental Period (in days for starter)
+  // rentalPeriod Int  
+
   tenant   User   @relation(name: "RentalRequestByTenant", fields: [tenantId], references: [id])
   tenantId String
 
