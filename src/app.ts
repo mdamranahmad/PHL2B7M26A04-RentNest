@@ -6,14 +6,13 @@ import { authRoutes } from "./modules/auth/auth.route";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
 import { landlordRoutes } from "./modules/landlord/landlord.route";
-import { auth } from "./middlewares/auth";
-import { Role } from "../generated/prisma/enums";
 import { categoriesRoutes } from "./modules/categories/categories.route";
 import { adminRoutes } from "./modules/admin/admin.route";
-import { PropertyRoutes } from "./modules/properties/properties.route";
+import { propertyRoutes } from "./modules/properties/properties.route";
 import { adminController } from "./modules/admin/admin.controller";
 import { categoriesController } from "./modules/categories/categories.controller";
 import { rentalRequestRoutes } from "./modules/rentals/rentals.route";
+import { bookingRoutes } from "./modules/booking.ts/booking.route";
 
 const app: Application = express();
 
@@ -29,6 +28,8 @@ app.use(
         },
     ),
 );
+
+app.use("/api/booking/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json()); //  parses raw data-stream (json or form submission) into json, writes into req.body
 
@@ -52,9 +53,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/landlord", landlordRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/properties", PropertyRoutes);
+app.use("/api/properties", propertyRoutes);
 app.get("/api/categories", categoriesController.getAllCategories);
 app.use("/api/rentals", rentalRequestRoutes);
+app.use("/api/booking", bookingRoutes);
 
 // Implementation of middleware for url Not Found
 app.use(notFound);

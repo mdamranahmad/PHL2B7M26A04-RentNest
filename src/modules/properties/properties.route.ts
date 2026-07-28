@@ -8,4 +8,4 @@ router.get("/", adminController.getAllProperties);
 router.get("/:id", propertyController.getPropertyDetails);
 
 
-export const PropertyRoutes = router;
+export const propertyRoutes = router;

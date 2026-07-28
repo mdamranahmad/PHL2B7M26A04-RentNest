@@ -146,6 +146,7 @@ export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof 
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   subscriberId: 'subscriberId',
+  stripeCustomerId: 'stripeCustomerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

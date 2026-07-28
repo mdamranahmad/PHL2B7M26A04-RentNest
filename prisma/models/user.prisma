@@ -16,7 +16,7 @@ model User {
   landLordRequests RentalRequest[] @relation("RentalRequestToLandLord")
   reviews          Review[]
   properties       Property[]
-  subscriber       Subscription[]
+  subscription       Subscription?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
