@@ -2,7 +2,6 @@ import Stripe from "stripe";
 import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
-import { SubscriptionStatus } from "../../../generated/prisma/enums";
 import {
     handleEventCheckoutComplete,
     handleEventSubscriptionUpdate,
@@ -12,7 +11,16 @@ const createCheckoutSession = async (userId: string, propertyId: string) => {
     const transactionResult = await prisma.$transaction(async (tx) => {
         const user = await tx.user.findUniqueOrThrow({
             where: { id: userId },
-            include: { subscription: true },
+            include: {
+                subscription: true,
+                tenantRequests: {
+                    where: {
+                        propertyId,
+                        rentRequestStatus: "PAYMENT_PENDING",
+                    },
+                    select: { id: true },
+                },
+            },
         });
 
         let stripeCustomerId = user.subscription?.stripeCustomerId;
@@ -43,24 +51,39 @@ const createCheckoutSession = async (userId: string, propertyId: string) => {
         const checkoutSession = await stripe.checkout.sessions.create({
             line_items: [
                 {
-                    price: config.stripe_price_id,
-                    quantity: Number(isPropertyAvailable.price),
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: isPropertyAvailable.title,
+                            description: isPropertyAvailable.description,
+                        },
+                        unit_amount: isPropertyAvailable.price * 100,
+                        recurring: {
+                            interval: "month",
+                        },
+                    },
+                    quantity: 1,
                 },
             ],
             mode: "subscription",
             customer: stripeCustomerId,
             payment_method_types: ["card"],
-            success_url: `${config.app_url}/properties?success=true`,
+            success_url: `${config.app_url}/properties/${isPropertyAvailable.id}?success=true`,
             cancel_url: `${config.app_url}/payment?success=false`,
-            metadata: { userId: user.id },
+            metadata: {
+                userId: user.id,
+                propertyId: propertyId,
+                rentRequestId: user.tenantRequests[0]?.id as string,
+            },
         });
 
-        return { url: checkoutSession.url, propertyId: propertyId };
+        console.log("checkoutSession: ", checkoutSession);
+
+        return checkoutSession.url;
     });
 
     return {
-        paymentUrl: transactionResult.url,
-        propertyId: transactionResult.propertyId,
+        paymentUrl: transactionResult,
     };
 };
 

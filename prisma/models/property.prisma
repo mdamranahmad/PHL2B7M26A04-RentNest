@@ -3,7 +3,7 @@ model Property {
   title       String
   description String
   location    String
-  price       Decimal  @db.Decimal(10, 2)
+  price       Int
   amenities   String[]
 
   isAvailable AvailabilityStatus @default(Available)

@@ -12,7 +12,7 @@ import { propertyRoutes } from "./modules/properties/properties.route";
 import { adminController } from "./modules/admin/admin.controller";
 import { categoriesController } from "./modules/categories/categories.controller";
 import { rentalRequestRoutes } from "./modules/rentals/rentals.route";
-import { bookingRoutes } from "./modules/booking.ts/booking.route";
+import { bookingRoutes } from "./modules/booking/booking.route";
 
 const app: Application = express();
 

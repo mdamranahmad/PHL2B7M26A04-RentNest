@@ -27,11 +27,11 @@ export type AggregateProperty = {
 }
 
 export type PropertyAvgAggregateOutputType = {
-  price: runtime.Decimal | null
+  price: number | null
 }
 
 export type PropertySumAggregateOutputType = {
-  price: runtime.Decimal | null
+  price: number | null
 }
 
 export type PropertyMinAggregateOutputType = {
@@ -39,7 +39,7 @@ export type PropertyMinAggregateOutputType = {
   title: string | null
   description: string | null
   location: string | null
-  price: runtime.Decimal | null
+  price: number | null
   isAvailable: $Enums.AvailabilityStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,7 +52,7 @@ export type PropertyMaxAggregateOutputType = {
   title: string | null
   description: string | null
   location: string | null
-  price: runtime.Decimal | null
+  price: number | null
   isAvailable: $Enums.AvailabilityStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -216,7 +216,7 @@ export type PropertyGroupByOutputType = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal
+  price: number
   amenities: string[]
   isAvailable: $Enums.AvailabilityStatus
   createdAt: Date
@@ -253,7 +253,7 @@ export type PropertyWhereInput = {
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringFilter<"Property"> | string
   location?: Prisma.StringFilter<"Property"> | string
-  price?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
@@ -292,7 +292,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringFilter<"Property"> | string
   location?: Prisma.StringFilter<"Property"> | string
-  price?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
@@ -332,7 +332,7 @@ export type PropertyScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Property"> | string
   description?: Prisma.StringWithAggregatesFilter<"Property"> | string
   location?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  price?: Prisma.DecimalWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntWithAggregatesFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusWithAggregatesFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
@@ -346,7 +346,7 @@ export type PropertyCreateInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -362,7 +362,7 @@ export type PropertyUncheckedCreateInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -378,7 +378,7 @@ export type PropertyUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -394,7 +394,7 @@ export type PropertyUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -410,7 +410,7 @@ export type PropertyCreateManyInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -424,7 +424,7 @@ export type PropertyUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,7 +436,7 @@ export type PropertyUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -562,6 +562,14 @@ export type PropertyCreateamenitiesInput = {
   set: string[]
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type PropertyUpdateamenitiesInput = {
   set?: string[]
   push?: string | string[]
@@ -646,7 +654,7 @@ export type PropertyCreateWithoutCategoryInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -661,7 +669,7 @@ export type PropertyUncheckedCreateWithoutCategoryInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -705,7 +713,7 @@ export type PropertyScalarWhereInput = {
   title?: Prisma.StringFilter<"Property"> | string
   description?: Prisma.StringFilter<"Property"> | string
   location?: Prisma.StringFilter<"Property"> | string
-  price?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
@@ -719,7 +727,7 @@ export type PropertyCreateWithoutRentalRequestsInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -734,7 +742,7 @@ export type PropertyUncheckedCreateWithoutRentalRequestsInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -765,7 +773,7 @@ export type PropertyUpdateWithoutRentalRequestsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -780,7 +788,7 @@ export type PropertyUncheckedUpdateWithoutRentalRequestsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -795,7 +803,7 @@ export type PropertyCreateWithoutReviewsInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -810,7 +818,7 @@ export type PropertyUncheckedCreateWithoutReviewsInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -841,7 +849,7 @@ export type PropertyUpdateWithoutReviewsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -856,7 +864,7 @@ export type PropertyUncheckedUpdateWithoutReviewsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -871,7 +879,7 @@ export type PropertyCreateWithoutLandLordInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -886,7 +894,7 @@ export type PropertyUncheckedCreateWithoutLandLordInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -927,7 +935,7 @@ export type PropertyCreateManyCategoryInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -940,7 +948,7 @@ export type PropertyUpdateWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -955,7 +963,7 @@ export type PropertyUncheckedUpdateWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -970,7 +978,7 @@ export type PropertyUncheckedUpdateManyWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -983,7 +991,7 @@ export type PropertyCreateManyLandLordInput = {
   title: string
   description: string
   location: string
-  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
@@ -996,7 +1004,7 @@ export type PropertyUpdateWithoutLandLordInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1011,7 +1019,7 @@ export type PropertyUncheckedUpdateWithoutLandLordInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1026,7 +1034,7 @@ export type PropertyUncheckedUpdateManyWithoutLandLordInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1169,7 +1177,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     title: string
     description: string
     location: string
-    price: runtime.Decimal
+    price: number
     amenities: string[]
     isAvailable: $Enums.AvailabilityStatus
     createdAt: Date
@@ -1607,7 +1615,7 @@ export interface PropertyFieldRefs {
   readonly title: Prisma.FieldRef<"Property", 'String'>
   readonly description: Prisma.FieldRef<"Property", 'String'>
   readonly location: Prisma.FieldRef<"Property", 'String'>
-  readonly price: Prisma.FieldRef<"Property", 'Decimal'>
+  readonly price: Prisma.FieldRef<"Property", 'Int'>
   readonly amenities: Prisma.FieldRef<"Property", 'String[]'>
   readonly isAvailable: Prisma.FieldRef<"Property", 'AvailabilityStatus'>
   readonly createdAt: Prisma.FieldRef<"Property", 'DateTime'>

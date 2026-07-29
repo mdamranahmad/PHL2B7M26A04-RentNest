@@ -14,23 +14,39 @@ export const getPeriodEnd = (payload: Stripe.Subscription) => {
 export const handleEventCheckoutComplete = async (
     session: Stripe.Checkout.Session,
 ) => {
+    console.log("session: ", session);
     const subscriberId = session.metadata?.userId as string;
     const stripeCustomerId = session.customer as string;
     const stripeSubscriptionId = session.subscription as string;
+    // typeof session.subscription === "string"
+    //     ? session.subscription
+    //     : session.subscription?.id;
+    const propertyId = session.metadata?.propertyId as string;
+    const rentRequestId = session.metadata?.rentRequestId as string;
 
-    if (!subscriberId || !stripeCustomerId || !stripeSubscriptionId) {
+    console.log({
+        subscriberId,
+        stripeCustomerId,
+        stripeSubscriptionId,
+        propertyId,
+        rentRequestId,
+    });
+
+    if (
+        !subscriberId ||
+        !stripeCustomerId ||
+        !stripeSubscriptionId ||
+        !propertyId ||
+        !rentRequestId
+    ) {
         console.log("Webhook: Missing Values to Initiate Checkout Session");
         return;
     }
 
-    const stripeSuscription =
+    const stripeSubscription =
         await stripe.subscriptions.retrieve(stripeSubscriptionId);
 
-    // console.log("Stripe Sub Info: ", stripeSuscription.items.data[0]);
-
-    const currentPeriodEnd = getPeriodEnd(stripeSuscription);
-
-    // console.log(currentPeriodEnd);
+    const currentPeriodEnd = getPeriodEnd(stripeSubscription);
 
     await prisma.subscription.upsert({
         where: {
@@ -50,9 +66,33 @@ export const handleEventCheckoutComplete = async (
             currentPeriodEnd,
         },
     });
+
+    await prisma.property.update({
+        where: {
+            id: propertyId,
+            isAvailable: "WAITING",
+        },
+        data: {
+            isAvailable: "RENTED",
+        },
+    });
+
+    await prisma.rentalRequest.update({
+        where: {
+            id: rentRequestId,
+            propertyId: propertyId,
+            tenantId: subscriberId,
+            rentRequestStatus: "PAYMENT_PENDING",
+        },
+        data: {
+            rentRequestStatus: "APPROVED",
+        },
+    });
 };
 
-export const handleEventSubscriptionUpdate = async (payload: Stripe.Subscription) => {
+export const handleEventSubscriptionUpdate = async (
+    payload: Stripe.Subscription,
+) => {
     const stripeSubscriptionId = payload.id;
 
     const status =
