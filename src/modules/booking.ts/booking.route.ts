@@ -11,6 +11,11 @@ router.post(
     bookingController.createCheckoutSession,
 );
 
-router.post("/webhook", bookingController.handleWebhook)
+router.post("/webhook", bookingController.handleWebhook);
+router.get(
+    "/status",
+    auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
+    bookingController.getSubscriptionStatus,
+);
 
 export const bookingRoutes = router;

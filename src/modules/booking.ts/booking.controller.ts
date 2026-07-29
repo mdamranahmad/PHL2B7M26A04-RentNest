@@ -8,7 +8,9 @@ const createCheckoutSession = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const userId = req.user?.id as string;
 
-        const result = await bookingService.createCheckoutSession(userId);
+        const { propertyId } = req.body;
+
+        const result = await bookingService.createCheckoutSession(userId, propertyId);
 
         sendResponse(res, {
             success: true,
@@ -23,7 +25,7 @@ const handleWebhook = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const event = req.body;
         const signature = req.headers["stripe-signature"]!;
-console.log("Booking Controller")
+        console.log("Booking Controller");
         await bookingService.handleWebhook(event, signature as string);
 
         //     let event = req.body;
@@ -67,4 +69,22 @@ console.log("Booking Controller")
     },
 );
 
-export const bookingController = { createCheckoutSession, handleWebhook };
+const getSubscriptionStatus = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const userId = req.user?.id as string;
+
+        const result = await bookingService.getSubscriptionStatus(userId);
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Subscription Status Retrieved Successfully.",
+            data: result,
+        });
+    },
+);
+
+export const bookingController = {
+    createCheckoutSession,
+    handleWebhook,
+    getSubscriptionStatus,
+};

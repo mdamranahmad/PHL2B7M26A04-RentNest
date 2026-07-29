@@ -8,7 +8,7 @@ import {
     handleEventSubscriptionUpdate,
 } from "../../utils/subscription.utils";
 
-const createCheckoutSession = async (userId: string) => {
+const createCheckoutSession = async (userId: string, propertyId: string) => {
     const transactionResult = await prisma.$transaction(async (tx) => {
         const user = await tx.user.findUniqueOrThrow({
             where: { id: userId },
@@ -27,11 +27,24 @@ const createCheckoutSession = async (userId: string) => {
             stripeCustomerId = customer.id;
         }
 
+        const isPropertyAvailable = await tx.property.findUniqueOrThrow({
+            where: { id: propertyId, isAvailable: "WAITING" },
+            include: {
+                rentalRequests: {
+                    where: {
+                        propertyId,
+                        tenantId: userId,
+                        rentRequestStatus: "PAYMENT_PENDING",
+                    },
+                },
+            },
+        });
+
         const checkoutSession = await stripe.checkout.sessions.create({
             line_items: [
                 {
                     price: config.stripe_price_id,
-                    quantity: 1,
+                    quantity: Number(isPropertyAvailable.price),
                 },
             ],
             mode: "subscription",
@@ -42,11 +55,12 @@ const createCheckoutSession = async (userId: string) => {
             metadata: { userId: user.id },
         });
 
-        return checkoutSession.url;
+        return { url: checkoutSession.url, propertyId: propertyId };
     });
 
     return {
-        paymentUrl: transactionResult,
+        paymentUrl: transactionResult.url,
+        propertyId: transactionResult.propertyId,
     };
 };
 
@@ -78,4 +92,26 @@ const handleWebhook = async (payload: Buffer, signature: string) => {
     }
 };
 
-export const bookingService = { createCheckoutSession, handleWebhook };
+const getSubscriptionStatus = async (subscriberId: string) => {
+    const isSubscriptionExist = await prisma.subscription.findUniqueOrThrow({
+        where: {
+            subscriberId,
+        },
+    });
+
+    const isActive =
+        isSubscriptionExist.status === "ACTIVE" &&
+        isSubscriptionExist.currentPeriodEnd &&
+        new Date(isSubscriptionExist.currentPeriodEnd) > new Date();
+
+    return {
+        status: isSubscriptionExist.status,
+        isSubscribed: isActive,
+        currentPeriodEnd: isSubscriptionExist.currentPeriodEnd,
+    };
+};
+export const bookingService = {
+    createCheckoutSession,
+    handleWebhook,
+    getSubscriptionStatus,
+};
