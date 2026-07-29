@@ -44,3 +44,9 @@ enum AvailabilityStatus {
   RENTED
   UNAVAILABLE
 }
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}

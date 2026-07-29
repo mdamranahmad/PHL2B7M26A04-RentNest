@@ -75,3 +75,12 @@ export const AvailabilityStatus = {
 } as const
 
 export type AvailabilityStatus = (typeof AvailabilityStatus)[keyof typeof AvailabilityStatus]
+
+
+export const SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]

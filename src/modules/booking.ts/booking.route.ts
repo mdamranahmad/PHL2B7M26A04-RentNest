@@ -11,6 +11,6 @@ router.post(
     bookingController.createCheckoutSession,
 );
 
-router.post("/webhook", () =>{})
+router.post("/webhook", bookingController.handleWebhook)
 
 export const bookingRoutes = router;

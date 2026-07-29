@@ -23,7 +23,7 @@ const handleWebhook = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const event = req.body;
         const signature = req.headers["stripe-signature"]!;
-
+console.log("Booking Controller")
         await bookingService.handleWebhook(event, signature as string);
 
         //     let event = req.body;
