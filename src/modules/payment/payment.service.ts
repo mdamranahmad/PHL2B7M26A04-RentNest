@@ -133,12 +133,33 @@ const getSubscriptionStatus = async (subscriberId: string) => {
         currentPeriodEnd: isSubscriptionExist.currentPeriodEnd,
     };
 };
+
+const getPaymentHistory = async (customerId: string) => {
+    return await prisma.payment.findMany({
+        where: {
+            customerId,
+        },
+    });
+};
+const getPaymentDetails = async (customerId: string, paymentId: string) => {
+    return await prisma.payment.findUniqueOrThrow({
+        where: {
+            id: paymentId,
+            customerId,
+        },
+        include: {
+            rentalRequest: true,
+        },
+    });
+};
+
 export const paymentService = {
     createCheckoutSession,
     handleWebhook,
     getSubscriptionStatus,
+    getPaymentHistory,
+    getPaymentDetails,
 };
-
 
 /*
 model Payment {
@@ -278,4 +299,3 @@ session:  {
   rentRequestId: '6057a20a-a124-47b8-9e26-54a5a27bc3ff'
 }
 */
-

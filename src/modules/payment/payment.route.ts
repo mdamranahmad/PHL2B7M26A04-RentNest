@@ -17,5 +17,7 @@ router.get(
     auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
     paymentController.getSubscriptionStatus,
 );
+router.get("/", paymentController.getPaymentHistory);
+router.get("/:id", paymentController.getPaymentDetails);
 
 export const paymentRoutes = router;

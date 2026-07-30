@@ -46,9 +46,42 @@ const getSubscriptionStatus = catchAsync(
         });
     },
 );
+const getPaymentHistory = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const userId = req.user?.id as string;
+
+        const result = await paymentService.getPaymentHistory(userId);
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Payment History Retrieved Successfully.",
+            data: result,
+        });
+    },
+);
+
+const getPaymentDetails = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const userId = req.user?.id as string;
+        const paymentId = req.params?.id as string;
+
+        const result = await paymentService.getPaymentDetails(
+            userId,
+            paymentId,
+        );
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "Payment Details Retrieved Successfully.",
+            data: result,
+        });
+    },
+);
 
 export const paymentController = {
     createCheckoutSession,
     handleWebhook,
     getSubscriptionStatus,
+    getPaymentHistory,
+    getPaymentDetails,
 };
