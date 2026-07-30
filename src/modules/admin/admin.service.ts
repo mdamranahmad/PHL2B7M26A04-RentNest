@@ -1,18 +1,119 @@
-import { equal } from "node:assert";
 import {
     AvailabilityStatus,
     CategoryType,
+    Role,
+    UserStatus,
 } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
-import { AppError } from "../../middlewares/appError";
-import { IPropertyQuery, IUpdateStatus } from "./admin.interface";
-import httpStatus from "http-status";
+import { IPropertyQuery, IUpdateStatus, IUserQuery } from "./admin.interface";
+import {
+    PropertyWhereInput,
+    UserWhereInput,
+} from "../../../generated/prisma/models";
 
 // ================================================================
 // A function to get all users profile from the system
 // ================================================================
-const getAllUsers = async () => {
-    return await prisma.user.findMany({
+const getAllUsers = async (query: IUserQuery) => {
+    const limit = query.limit ? Number(query.limit) : 10;
+    const page = query.page ? Number(query.page) : 1;
+    const skip = (page - 1) * limit;
+    const sortBy = query.sortBy ? query.sortBy : "createdAt";
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc";
+
+    const searchConditions: UserWhereInput[] = [];
+
+    if (query.searchTerm && typeof query.searchTerm === "string") {
+        const upperSearchTerm = query.searchTerm.toUpperCase();
+        const isValidRoleEnum = Object.values(Role).includes(
+            upperSearchTerm as Role,
+        );
+        const isValidUserStatusEnum = Object.values(UserStatus).includes(
+            upperSearchTerm as UserStatus,
+        );
+
+        searchConditions.push(
+            {
+                name: { contains: query.searchTerm, mode: "insensitive" },
+            },
+            {
+                email: { contains: query.searchTerm, mode: "insensitive" },
+            },
+            {
+                id: { contains: query.searchTerm, mode: "insensitive" },
+            },
+            { contactNo: { contains: query.searchTerm } },
+        );
+
+        if (isValidRoleEnum) {
+            searchConditions.push({
+                role: upperSearchTerm as Role,
+            });
+        }
+
+        if (isValidUserStatusEnum) {
+            searchConditions.push({
+                status: upperSearchTerm as UserStatus,
+            });
+        }
+    }
+
+    const andCondition: UserWhereInput[] = [];
+
+    if (searchConditions.length > 0) {
+        andCondition.push({ OR: searchConditions });
+    }
+
+    if (query.name) {
+        andCondition.push({
+            name: {
+                contains: query.name as string,
+
+                mode: "insensitive",
+            },
+        });
+    }
+
+    if (query.role) {
+        andCondition.push({
+            role: {
+                equals: query.role as Role,
+            },
+        });
+    }
+
+    if (query.email) {
+        andCondition.push({
+            email: {
+                contains: query.email as string,
+
+                mode: "insensitive",
+            },
+        });
+    }
+
+    if (query.status) {
+        andCondition.push({
+            status: {
+                equals: query.status as UserStatus,
+            },
+        });
+    }
+
+    const whereConditions: UserWhereInput =
+        andCondition.length > 0 ? { AND: andCondition } : {};
+
+    const total = await prisma.user.count({
+        where: whereConditions,
+    });
+
+    const result = await prisma.user.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder,
+        },
         omit: { passwordHash: true },
         include: {
             properties: {
@@ -20,6 +121,16 @@ const getAllUsers = async () => {
             },
         },
     });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total,
+            totalPage: Math.ceil(total / limit),
+        },
+        users: result,
+    };
 };
 
 // ================================================================
@@ -41,110 +152,126 @@ const getAllProperties = async (query: IPropertyQuery) => {
     const limit = query.limit ? Number(query.limit) : 10;
     const page = query.page ? Number(query.page) : 1;
     const sortBy = query.sortBy ? query.sortBy : "createdAt";
-    const sortOrder = query.sortOrder ? query.sortBy : "desc";
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc";
 
-    const skipt = (page - 1) * limit;
+    const skip = (page - 1) * limit;
     const searchUpper = query.searchTerm ? query.searchTerm.toUpperCase() : "";
     const isCategoryEnum = Object.values(CategoryType).includes(
         searchUpper as CategoryType,
     );
-    return await prisma.property.findMany({
-        // Implement Query
-        where: {
-            AND: [
-                query.searchTerm
-                    ? {
-                          OR: [
-                              {
-                                  title: {
-                                      contains: query.searchTerm,
-                                      mode: "insensitive",
-                                  },
+
+    const whereConditions: PropertyWhereInput = {
+        AND: [
+            query.searchTerm
+                ? {
+                      OR: [
+                          {
+                              title: {
+                                  contains: query.searchTerm,
+                                  mode: "insensitive",
                               },
-                              {
-                                  description: {
-                                      contains: query.searchTerm,
-                                      mode: "insensitive",
-                                  },
+                          },
+                          {
+                              description: {
+                                  contains: query.searchTerm,
+                                  mode: "insensitive",
                               },
-                              {
-                                  location: {
-                                      contains: query.searchTerm,
-                                      mode: "insensitive",
-                                  },
+                          },
+                          {
+                              location: {
+                                  contains: query.searchTerm,
+                                  mode: "insensitive",
                               },
-                              ...(isCategoryEnum
-                                  ? [
-                                        {
-                                            category: {
-                                                categoryType: {
-                                                    equals: searchUpper as CategoryType,
-                                                },
+                          },
+                          ...(isCategoryEnum
+                              ? [
+                                    {
+                                        category: {
+                                            categoryType: {
+                                                equals: searchUpper as CategoryType,
                                             },
                                         },
-                                    ]
-                                  : []),
-                          ],
-                      }
-                    : {},
-                // Title Filtering
-                query.title
-                    ? {
-                          title: {
-                              contains: query.title as string,
-                              mode: "insensitive",
+                                    },
+                                ]
+                              : []),
+                      ],
+                  }
+                : {},
+            // Title Filtering
+            query.title
+                ? {
+                      title: {
+                          contains: query.title as string,
+                          mode: "insensitive",
+                      },
+                  }
+                : {},
+
+            // Description filtering
+            query.description ? { description: query.description } : {},
+
+            // Amenities Filtering
+            query.amenities
+                ? {
+                      amenities: {
+                          has: query.amenities as string,
+                          //   mode: "insensitive",
+                      },
+                  }
+                : {},
+
+            // Category Filtering
+            query.category || query.categoryType
+                ? {
+                      category: {
+                          categoryType: {
+                              equals: (
+                                  (query.category ||
+                                      query.categoryType) as string
+                              )?.toUpperCase() as CategoryType,
                           },
-                      }
-                    : {},
+                      },
+                  }
+                : {},
 
-                // Description filtering
-                query.description ? { description: query.description } : {},
+            // Availability Filtering
+            query.isAvailable
+                ? { isAvailable: query.isAvailable as AvailabilityStatus }
+                : {},
 
-                // Amenities Filtering
-                query.amenities
-                    ? {
-                          amenities: {
-                              has: query.amenities as string,
-                              mode: "insensitive",
-                          },
-                      }
-                    : {},
+            // Filtering by Landlord
+            query.landLord ? { landLord: query.landLord } : {},
 
-                // Category Filtering
-                query.category ? { category: query.category } : {},
+            // Location Filtering
+            query.location
+                ? {
+                      location: {
+                          contains: query.location as string,
+                          mode: "insensitive",
+                      },
+                  }
+                : {},
 
-                // Availability Filtering
-                query.isAvailable
-                    ? { isAvailable: query.isAvailable as AvailabilityStatus }
-                    : {},
+            // Filterig By Price
+            query.price ? { price: query.price } : {},
+        ],
+    };
 
-                // Filtering by Landlord
-                query.landLord ? { landLord: query.landLord } : {},
-
-                // Location Filtering
-                query.location
-                    ? {
-                          location: {
-                              contains: query.location as string,
-                              mode: "insensitive",
-                          },
-                      }
-                    : {},
-
-                // Filterig By Price
-                query.price ? { price: query.price } : {},
-            ],
-        },
-
+    const total = await prisma.property.count({
+        where: whereConditions,
+    });
+    const results = await prisma.property.findMany({
+        // Implement Query
+        where: whereConditions,
         take: limit,
-        skip: page,
-
+        skip,
         orderBy: {
             [sortBy]: sortOrder,
         },
         include: {
             category: { select: { categoryType: true } },
             landLord: { select: { name: true } },
+            _count: { select: { rentalRequests: true, reviews: true } },
             rentalRequests: {
                 select: {
                     rentRequestStatus: true,
@@ -154,6 +281,16 @@ const getAllProperties = async (query: IPropertyQuery) => {
             reviews: { select: { id: true, rating: true, comment: true } },
         },
     });
+
+    return {
+        metadata: {
+            page,
+            limit,
+            total,
+            totalPage: Math.ceil(total / limit),
+        },
+        properties: results,
+    };
 };
 
 // ================================================================

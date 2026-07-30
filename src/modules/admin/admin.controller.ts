@@ -9,7 +9,8 @@ import { AppError } from "../../middlewares/appError";
 // A function to get all user profiles from the system
 // ================================================================
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-    const allUsers = await adminService.getAllUsers();
+    const query = req.query;
+    const allUsers = await adminService.getAllUsers(query);
 
     sendResponse(res, {
         success: true,

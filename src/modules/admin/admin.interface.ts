@@ -3,7 +3,10 @@ import {
     AvailabilityStatus,
     UserStatus,
 } from "../../../generated/prisma/enums";
-import { PropertyWhereInput } from "../../../generated/prisma/models";
+import {
+    PropertyWhereInput,
+    UserWhereInput,
+} from "../../../generated/prisma/models";
 
 export interface IUpdateStatus {
     status: UserStatus;
@@ -17,7 +20,15 @@ export interface IPropertyQuery extends PropertyWhereInput {
     // isAvailable?: AvailabilityStatus;
     // category?: Category;
     // landLord?: User;
+    categoryType?: string;
+    searchTerm?: string;
+    page?: string;
+    limit?: string;
+    sortOrder?: string;
+    sortBy?: string;
+}
 
+export interface IUserQuery extends UserWhereInput {
     searchTerm?: string;
     page?: string;
     limit?: string;
