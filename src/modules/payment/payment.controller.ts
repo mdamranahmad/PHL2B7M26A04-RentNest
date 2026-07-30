@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
-import { bookingService } from "./booking.service";
+import { paymentService } from "./payment.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
 
@@ -10,7 +10,7 @@ const createCheckoutSession = catchAsync(
 
         const { propertyId } = req.body;
 
-        const result = await bookingService.createCheckoutSession(
+        const result = await paymentService.createCheckoutSession(
             userId,
             propertyId,
         );
@@ -29,7 +29,7 @@ const handleWebhook = catchAsync(
         const event = req.body;
         // console.log(JSON.parse(event));
         const signature = req.headers["stripe-signature"]!;
-        await bookingService.handleWebhook(event, signature as string);
+        await paymentService.handleWebhook(event, signature as string);
     },
 );
 
@@ -37,7 +37,7 @@ const getSubscriptionStatus = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const userId = req.user?.id as string;
 
-        const result = await bookingService.getSubscriptionStatus(userId);
+        const result = await paymentService.getSubscriptionStatus(userId);
         sendResponse(res, {
             success: true,
             statusCode: httpStatus.OK,
@@ -47,7 +47,7 @@ const getSubscriptionStatus = catchAsync(
     },
 );
 
-export const bookingController = {
+export const paymentController = {
     createCheckoutSession,
     handleWebhook,
     getSubscriptionStatus,

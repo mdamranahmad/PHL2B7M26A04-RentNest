@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { bookingController } from "./booking.controller";
+import { paymentController } from "./payment.controller";
 import { auth } from "../../middlewares/auth";
 import { Role } from "../../../generated/prisma/enums";
 
@@ -8,14 +8,14 @@ const router = Router();
 router.post(
     "/checkout",
     auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
-    bookingController.createCheckoutSession,
+    paymentController.createCheckoutSession,
 );
 
-router.post("/webhook", bookingController.handleWebhook);
+router.post("/webhook", paymentController.handleWebhook);
 router.get(
     "/status",
     auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
-    bookingController.getSubscriptionStatus,
+    paymentController.getSubscriptionStatus,
 );
 
-export const bookingRoutes = router;
+export const paymentRoutes = router;

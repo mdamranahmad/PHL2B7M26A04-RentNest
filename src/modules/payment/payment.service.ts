@@ -133,7 +133,7 @@ const getSubscriptionStatus = async (subscriberId: string) => {
         currentPeriodEnd: isSubscriptionExist.currentPeriodEnd,
     };
 };
-export const bookingService = {
+export const paymentService = {
     createCheckoutSession,
     handleWebhook,
     getSubscriptionStatus,
