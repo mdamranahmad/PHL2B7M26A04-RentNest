@@ -45,7 +45,8 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
 // A function to get all properties from the system
 // ================================================================
 const getAllProperties = catchAsync(async (req: Request, res: Response) => {
-    const allProperties = await adminService.getAllProperties();
+    const query = req.query;
+    const allProperties = await adminService.getAllProperties(query);
 
     sendResponse(res, {
         success: true,
