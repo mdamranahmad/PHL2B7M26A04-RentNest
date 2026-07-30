@@ -985,7 +985,8 @@ export const PaymentScalarFieldEnum = {
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  rentalRequestId: 'rentalRequestId'
+  rentalRequestId: 'rentalRequestId',
+  customerId: 'customerId'
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]

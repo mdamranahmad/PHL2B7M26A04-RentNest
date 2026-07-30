@@ -1,7 +1,10 @@
 import Stripe from "stripe";
 import { stripe } from "../lib/stripe";
 import { prisma } from "../lib/prisma";
-import { SubscriptionStatus } from "../../generated/prisma/enums";
+import {
+    PaymentStatus,
+    SubscriptionStatus,
+} from "../../generated/prisma/enums";
 
 export const getPeriodEnd = (payload: Stripe.Subscription) => {
     const currentPeriodEndInMs = payload.items.data[0]?.current_period_end!;
@@ -14,7 +17,7 @@ export const getPeriodEnd = (payload: Stripe.Subscription) => {
 export const handleEventCheckoutComplete = async (
     session: Stripe.Checkout.Session,
 ) => {
-    console.log("session: ", session);
+    // console.log("session: ", session);
     const subscriberId = session.metadata?.userId as string;
     const stripeCustomerId = session.customer as string;
     const stripeSubscriptionId = session.subscription as string;
@@ -24,13 +27,25 @@ export const handleEventCheckoutComplete = async (
     const propertyId = session.metadata?.propertyId as string;
     const rentRequestId = session.metadata?.rentRequestId as string;
 
-    console.log({
-        subscriberId,
-        stripeCustomerId,
-        stripeSubscriptionId,
-        propertyId,
-        rentRequestId,
-    });
+    const transactionId = session.id as string;
+    const amount = Number(session.amount_total) / 100;
+    const method = session.payment_method_types?.[0];
+    const provider = "STRIPE";
+    const status =
+        session.payment_status === "paid"
+            ? "COMPLETED"
+            : session.payment_status === "unpaid"
+              ? "PENDING"
+              : "FAILED";
+    const paidAt = session.payment_status === "paid" ? new Date() : null;
+
+    // console.log({
+    //     subscriberId,
+    //     stripeCustomerId,
+    //     stripeSubscriptionId,
+    //     propertyId,
+    //     rentRequestId,
+    // });
 
     if (
         !subscriberId ||
@@ -64,6 +79,30 @@ export const handleEventCheckoutComplete = async (
             stripeSubscriptionId,
             status: "ACTIVE",
             currentPeriodEnd,
+        },
+    });
+    await prisma.payment.upsert({
+        where: {
+            customerId: subscriberId,
+        },
+        create: {
+            customerId: subscriberId,
+            transactionId,
+            amount,
+            method,
+            provider,
+            status,
+            paidAt,
+            rentalRequestId: rentRequestId,
+        },
+        update: {
+            transactionId,
+            amount,
+            method,
+            provider,
+            status,
+            paidAt,
+            rentalRequestId: rentRequestId,
         },
     });
 

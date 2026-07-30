@@ -269,6 +269,7 @@ export type UserWhereInput = {
   reviews?: Prisma.ReviewListRelationFilter
   properties?: Prisma.PropertyListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
+  payment?: Prisma.PaymentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -288,6 +289,7 @@ export type UserOrderByWithRelationInput = {
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   properties?: Prisma.PropertyOrderByRelationAggregateInput
   subscription?: Prisma.SubscriptionOrderByWithRelationInput
+  payment?: Prisma.PaymentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -310,6 +312,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reviews?: Prisma.ReviewListRelationFilter
   properties?: Prisma.PropertyListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
+  payment?: Prisma.PaymentListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -365,6 +368,7 @@ export type UserCreateInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -384,6 +388,7 @@ export type UserUncheckedCreateInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUpdateInput = {
@@ -403,6 +408,7 @@ export type UserUpdateInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -422,6 +428,7 @@ export type UserUncheckedUpdateInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -521,6 +528,20 @@ export type UserSumOrderByAggregateInput = {
   age?: Prisma.SortOrder
 }
 
+export type UserCreateNestedOneWithoutPaymentInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentInput, Prisma.UserUncheckedCreateWithoutPaymentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPaymentNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentInput, Prisma.UserUncheckedCreateWithoutPaymentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentInput
+  upsert?: Prisma.UserUpsertWithoutPaymentInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentInput, Prisma.UserUpdateWithoutPaymentInput>, Prisma.UserUncheckedUpdateWithoutPaymentInput>
+}
+
 export type UserCreateNestedOneWithoutPropertiesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPropertiesInput, Prisma.UserUncheckedCreateWithoutPropertiesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPropertiesInput
@@ -607,6 +628,98 @@ export type EnumUserStatusFieldUpdateOperationsInput = {
   set?: $Enums.UserStatus
 }
 
+export type UserCreateWithoutPaymentInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  age?: number | null
+  contactNo?: string | null
+  profilePhoto?: string | null
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenantRequests?: Prisma.RentalRequestCreateNestedManyWithoutTenantInput
+  landLordRequests?: Prisma.RentalRequestCreateNestedManyWithoutLandLordInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutLandLordInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutSubscriberInput
+}
+
+export type UserUncheckedCreateWithoutPaymentInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  age?: number | null
+  contactNo?: string | null
+  profilePhoto?: string | null
+  role: $Enums.Role
+  status?: $Enums.UserStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenantRequests?: Prisma.RentalRequestUncheckedCreateNestedManyWithoutTenantInput
+  landLordRequests?: Prisma.RentalRequestUncheckedCreateNestedManyWithoutLandLordInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutLandLordInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutSubscriberInput
+}
+
+export type UserCreateOrConnectWithoutPaymentInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentInput, Prisma.UserUncheckedCreateWithoutPaymentInput>
+}
+
+export type UserUpsertWithoutPaymentInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPaymentInput, Prisma.UserUncheckedUpdateWithoutPaymentInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentInput, Prisma.UserUncheckedCreateWithoutPaymentInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPaymentInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPaymentInput, Prisma.UserUncheckedUpdateWithoutPaymentInput>
+}
+
+export type UserUpdateWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenantRequests?: Prisma.RentalRequestUpdateManyWithoutTenantNestedInput
+  landLordRequests?: Prisma.RentalRequestUpdateManyWithoutLandLordNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutLandLordNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutSubscriberNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenantRequests?: Prisma.RentalRequestUncheckedUpdateManyWithoutTenantNestedInput
+  landLordRequests?: Prisma.RentalRequestUncheckedUpdateManyWithoutLandLordNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutLandLordNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutSubscriberNestedInput
+}
+
 export type UserCreateWithoutPropertiesInput = {
   id?: string
   name: string
@@ -623,6 +736,7 @@ export type UserCreateWithoutPropertiesInput = {
   landLordRequests?: Prisma.RentalRequestCreateNestedManyWithoutLandLordInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUncheckedCreateWithoutPropertiesInput = {
@@ -641,6 +755,7 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   landLordRequests?: Prisma.RentalRequestUncheckedCreateNestedManyWithoutLandLordInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -675,6 +790,7 @@ export type UserUpdateWithoutPropertiesInput = {
   landLordRequests?: Prisma.RentalRequestUpdateManyWithoutLandLordNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPropertiesInput = {
@@ -693,6 +809,7 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   landLordRequests?: Prisma.RentalRequestUncheckedUpdateManyWithoutLandLordNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserCreateWithoutTenantRequestsInput = {
@@ -711,6 +828,7 @@ export type UserCreateWithoutTenantRequestsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUncheckedCreateWithoutTenantRequestsInput = {
@@ -729,6 +847,7 @@ export type UserUncheckedCreateWithoutTenantRequestsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type UserCreateOrConnectWithoutTenantRequestsInput = {
@@ -752,6 +871,7 @@ export type UserCreateWithoutLandLordRequestsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUncheckedCreateWithoutLandLordRequestsInput = {
@@ -770,6 +890,7 @@ export type UserUncheckedCreateWithoutLandLordRequestsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type UserCreateOrConnectWithoutLandLordRequestsInput = {
@@ -804,6 +925,7 @@ export type UserUpdateWithoutTenantRequestsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTenantRequestsInput = {
@@ -822,6 +944,7 @@ export type UserUncheckedUpdateWithoutTenantRequestsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUpsertWithoutLandLordRequestsInput = {
@@ -851,6 +974,7 @@ export type UserUpdateWithoutLandLordRequestsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLandLordRequestsInput = {
@@ -869,6 +993,7 @@ export type UserUncheckedUpdateWithoutLandLordRequestsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -887,6 +1012,7 @@ export type UserCreateWithoutReviewsInput = {
   landLordRequests?: Prisma.RentalRequestCreateNestedManyWithoutLandLordInput
   properties?: Prisma.PropertyCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -905,6 +1031,7 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   landLordRequests?: Prisma.RentalRequestUncheckedCreateNestedManyWithoutLandLordInput
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutLandLordInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutSubscriberInput
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -939,6 +1066,7 @@ export type UserUpdateWithoutReviewsInput = {
   landLordRequests?: Prisma.RentalRequestUpdateManyWithoutLandLordNestedInput
   properties?: Prisma.PropertyUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -957,6 +1085,7 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   landLordRequests?: Prisma.RentalRequestUncheckedUpdateManyWithoutLandLordNestedInput
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutLandLordNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutSubscriberNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserCreateWithoutSubscriptionInput = {
@@ -975,6 +1104,7 @@ export type UserCreateWithoutSubscriptionInput = {
   landLordRequests?: Prisma.RentalRequestCreateNestedManyWithoutLandLordInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyCreateNestedManyWithoutLandLordInput
+  payment?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
 }
 
 export type UserUncheckedCreateWithoutSubscriptionInput = {
@@ -993,6 +1123,7 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   landLordRequests?: Prisma.RentalRequestUncheckedCreateNestedManyWithoutLandLordInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
   properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutLandLordInput
+  payment?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type UserCreateOrConnectWithoutSubscriptionInput = {
@@ -1027,6 +1158,7 @@ export type UserUpdateWithoutSubscriptionInput = {
   landLordRequests?: Prisma.RentalRequestUpdateManyWithoutLandLordNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUpdateManyWithoutLandLordNestedInput
+  payment?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubscriptionInput = {
@@ -1045,6 +1177,7 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   landLordRequests?: Prisma.RentalRequestUncheckedUpdateManyWithoutLandLordNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutLandLordNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 
@@ -1057,6 +1190,7 @@ export type UserCountOutputType = {
   landLordRequests: number
   reviews: number
   properties: number
+  payment: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1064,6 +1198,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   landLordRequests?: boolean | UserCountOutputTypeCountLandLordRequestsArgs
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
   properties?: boolean | UserCountOutputTypeCountPropertiesArgs
+  payment?: boolean | UserCountOutputTypeCountPaymentArgs
 }
 
 /**
@@ -1104,6 +1239,13 @@ export type UserCountOutputTypeCountPropertiesArgs<ExtArgs extends runtime.Types
   where?: Prisma.PropertyWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPaymentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1122,6 +1264,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   properties?: boolean | Prisma.User$propertiesArgs<ExtArgs>
   subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
+  payment?: boolean | Prisma.User$paymentArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1174,6 +1317,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   properties?: boolean | Prisma.User$propertiesArgs<ExtArgs>
   subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
+  payment?: boolean | Prisma.User$paymentArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1187,6 +1331,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     properties: Prisma.$PropertyPayload<ExtArgs>[]
     subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
+    payment: Prisma.$PaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1599,6 +1744,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   properties<T extends Prisma.User$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscription<T extends Prisma.User$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  payment<T extends Prisma.User$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2144,6 +2290,30 @@ export type User$subscriptionArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   include?: Prisma.SubscriptionInclude<ExtArgs> | null
   where?: Prisma.SubscriptionWhereInput
+}
+
+/**
+ * User.payment
+ */
+export type User$paymentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
 }
 
 /**

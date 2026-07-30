@@ -8,6 +8,7 @@ import httpStatus from "http-status";
 // A function to fetch all proeprties for the user from the system
 // ================================================================
 const getAllPropertiesForUser = async (landLordId: string) => {
+    
     return await prisma.property.findMany({
         where: {
             landLordId,

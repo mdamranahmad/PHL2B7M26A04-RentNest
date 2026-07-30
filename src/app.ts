@@ -29,7 +29,7 @@ app.use(
     ),
 );
 
-app.use("/api/booking/webhook", express.raw({ type: "application/json" }));
+app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json()); //  parses raw data-stream (json or form submission) into json, writes into req.body
 
