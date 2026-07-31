@@ -83,7 +83,7 @@ export const handleEventCheckoutComplete = async (
     });
     await prisma.payment.upsert({
         where: {
-            customerId: subscriberId,
+            transactionId,
         },
         create: {
             customerId: subscriberId,
@@ -149,7 +149,7 @@ export const handleEventSubscriptionUpdate = async (
         },
     });
 
-    if (!isSubscriptionExist) {
+    if (isSubscriptionExist.length === 0) {
         console.log(
             `Webhook: No Subscription Found for Subscription Id: ${stripeSubscriptionId}`,
         );

@@ -30,6 +30,7 @@ const handleWebhook = catchAsync(
         // console.log(JSON.parse(event));
         const signature = req.headers["stripe-signature"]!;
         await paymentService.handleWebhook(event, signature as string);
+        res.status(200).json({ received: true });
     },
 );
 

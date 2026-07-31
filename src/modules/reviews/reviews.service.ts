@@ -22,7 +22,8 @@ const postReview = async (payload: IReview, reviewerId: string) => {
             tenantRequests: {
                 some: {
                     propertyId,
-                    // AND: { payments: { some: { status: "COMPLETED" } } },
+                    AND: { payments: { some: { status: "COMPLETED" } } },
+                    rentRequestStatus: "APPROVED"
                 },
             },
         },
