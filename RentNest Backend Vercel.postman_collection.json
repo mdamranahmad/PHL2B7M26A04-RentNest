@@ -1,0 +1,1106 @@
+{
+  "info": {
+    "_postman_id": "ce48165b-0d37-4c8e-8e1b-fc2610371e8a",
+    "name": "RentNest Backend Vercel",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54842332",
+    "_collection_link": "https://go.postman.co/collection/54842332-ce48165b-0d37-4c8e-8e1b-fc2610371e8a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Test Landlord 03\",\r\n    \"email\": \"testlandlord03@email.com\",\r\n    \"password\": \"12345\",\r\n    \"age\": 28,\r\n    \"role\": \"LANDLORD\",\r\n    \"status\": \"ACTIVE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/auth/register",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Tenant",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"TestTenant02\",\r\n    \"email\": \"testtenant02@email.com\",\r\n    \"password\": \"12345\",\r\n    \"age\": 40,\r\n    \"role\": \"TENANT\",\r\n    \"status\": \"ACTIVE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/auth/register",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/auth/login",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login LandLord",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"testlandlord03@email.com\",\r\n    \"password\": \"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/auth/login",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Tenant",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"tenant01@email.com\",\r\n    \"password\": \"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/auth/login",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Landlords",
+      "item": [
+        {
+          "name": "Create Properties",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{    \r\n    \"title\": \"Modern Lakefront Apartment\",\r\n    \"description\": \"A spacious 2-bedroom apartment with panoramic lake views, floor-to-ceiling windows, and top-tier modern appliances.\",\r\n    \"location\": \"Gulshan-2, Dhaka\",\r\n    \"price\": 85000,\r\n    \"amenities\": [\"WiFi\", \"Air Conditioning\", \"Swimming Pool\", \"Gym\", \"24/7 Security\", \"Parking\"],\r\n    \"thumbnail\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80\",\r\n    \"images\": [\r\n      \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80\",\r\n      \"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80\",\r\n      \"https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80\"\r\n    ],\r\n    \"isAvailable\": \"Available\",\r\n    \"category\": \"HOUSE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/landlord/properties",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "landlord",
+                "properties"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Property",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isAvailable\": \"AVAILABLE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/landlord/properties/8941395d-e173-4c05-8b49-c0789c29d19f",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "landlord",
+                "properties",
+                "8941395d-e173-4c05-8b49-c0789c29d19f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Properties",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/landlord/properties",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "landlord",
+                "properties"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Property Listings",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{rentnest}}/api/landlord/properties",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "landlord",
+                "properties"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Rent Requests",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/landlord/requests",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "landlord",
+                "requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve or Reject Request",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"rentRequestStatus\": \"APPROVED\"   \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/landlord/requests/d5899c0e-11c1-498e-a25e-af36afc7d752",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "landlord",
+                "requests",
+                "d5899c0e-11c1-498e-a25e-af36afc7d752"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Add Category",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"categoryType\": \"APARTMENT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/categories/add",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"categoryType\": \"APARTMENT\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/categories/",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"categoryType\": \"HOUSE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/categories/c9181e84-8177-4ee3-8a9c-6ffb609bdd89",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories",
+                "c9181e84-8177-4ee3-8a9c-6ffb609bdd89"
+              ],
+              "query": [
+                {
+                  "key": "categoryTypeId",
+                  "value": "607b6342-e488-408b-8d56-7509afc4496f",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/categories/cd521340-5b71-4306-9389-f48f16dbd6fa",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories",
+                "cd521340-5b71-4306-9389-f48f16dbd6fa"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Update Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\" : \"ACTIVE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/admin/users/b05e61ee-83e7-4b0d-a28a-4a446f17249c",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "b05e61ee-83e7-4b0d-a28a-4a446f17249c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/admin/users?page=2",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Rental Requests",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/admin/rentals",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "rentals"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Properties",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/admin/properties?category=studio",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "properties"
+              ],
+              "query": [
+                {
+                  "key": "isAvailable",
+                  "value": "Available",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryType",
+                  "value": "house",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryType",
+                  "value": "STUDIO",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "studio"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Property",
+      "item": [
+        {
+          "name": "Get All Properties",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/properties?isAvailable=Available",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "properties"
+              ],
+              "query": [
+                {
+                  "key": "searchTerm",
+                  "value": "house",
+                  "disabled": true
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "landlord 01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "isAvailable",
+                  "value": "Available"
+                },
+                {
+                  "key": "category",
+                  "value": "HOUSE",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "house",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "house",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "sylhet",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "dhaka",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "amenities",
+                  "value": "wifi",
+                  "disabled": true
+                },
+                {
+                  "key": "amenities",
+                  "value": "sound",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "title",
+                  "value": "landlord03",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "price",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "2",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "2",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/properties/82667521-6afd-4e8d-aa00-ca14cd510ee4",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "properties",
+                "82667521-6afd-4e8d-aa00-ca14cd510ee4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property Categories",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin01@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/categories/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rental Requests",
+      "item": [
+        {
+          "name": "Submit Rental Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"propertyId\" : \"82667521-6afd-4e8d-aa00-ca14cd510ee4\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/rentals",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "rentals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rental Request for User",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"landlord06@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/rentals",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "rentals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rental Request By Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"landlord06@email.com\",\r\n    \"password\": \"12345\"\r\n}"
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/rentals/9b44435b-4307-4db3-9219-990e92fdb3ad",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "rentals",
+                "9b44435b-4307-4db3-9219-990e92fdb3ad"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Rental Request",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{rentnest}}/api/rentals/8e829ea9-cfe7-4cc4-8564-e2183cfdacc3",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "rentals",
+                "8e829ea9-cfe7-4cc4-8564-e2183cfdacc3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Create Checkout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"propertyId\" : \"82667521-6afd-4e8d-aa00-ca14cd510ee4\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/payment/checkout",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                "checkout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{rentnest}}/api/payment/",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{rentnest}}/api/payment/eb09fe06-00d0-4662-b93b-88a2c9dbcead",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                "eb09fe06-00d0-4662-b93b-88a2c9dbcead"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscription Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{rentnest}}/api/payment/status",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Review",
+      "item": [
+        {
+          "name": "Post Review",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\" : 4.5,\r\n    \"comment\" : \"Best Review\",\r\n    \"propertyId\" : \"5a3320ee-d7e2-40b2-bcc8-b703959c9d3e\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/reviews",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Review by User",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\" : 10,\r\n    \"comment\" : \"Best Review\",\r\n    \"propertyId\" : \"c7ffa2d9-b423-4e11-817f-043dcf1771ba\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rentnest}}/api/reviews",
+              "host": [
+                "{{rentnest}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "searchTerm",
+                  "value": "5a3320ee-d7e2-40b2-bcc8-b703959c9d3e",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Homepage",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "rentnest",
+      "value": ""
+    }
+  ]
+}

@@ -5,6 +5,8 @@ model Property {
   location    String
   price       Int
   amenities   String[]
+  thumbnail   String?
+  images      String[]
 
   isAvailable AvailabilityStatus @default(Available)
 

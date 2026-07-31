@@ -40,6 +40,7 @@ export type PropertyMinAggregateOutputType = {
   description: string | null
   location: string | null
   price: number | null
+  thumbnail: string | null
   isAvailable: $Enums.AvailabilityStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +54,7 @@ export type PropertyMaxAggregateOutputType = {
   description: string | null
   location: string | null
   price: number | null
+  thumbnail: string | null
   isAvailable: $Enums.AvailabilityStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -67,6 +69,8 @@ export type PropertyCountAggregateOutputType = {
   location: number
   price: number
   amenities: number
+  thumbnail: number
+  images: number
   isAvailable: number
   createdAt: number
   updatedAt: number
@@ -90,6 +94,7 @@ export type PropertyMinAggregateInputType = {
   description?: true
   location?: true
   price?: true
+  thumbnail?: true
   isAvailable?: true
   createdAt?: true
   updatedAt?: true
@@ -103,6 +108,7 @@ export type PropertyMaxAggregateInputType = {
   description?: true
   location?: true
   price?: true
+  thumbnail?: true
   isAvailable?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +123,8 @@ export type PropertyCountAggregateInputType = {
   location?: true
   price?: true
   amenities?: true
+  thumbnail?: true
+  images?: true
   isAvailable?: true
   createdAt?: true
   updatedAt?: true
@@ -218,6 +226,8 @@ export type PropertyGroupByOutputType = {
   location: string
   price: number
   amenities: string[]
+  thumbnail: string | null
+  images: string[]
   isAvailable: $Enums.AvailabilityStatus
   createdAt: Date
   updatedAt: Date
@@ -255,6 +265,8 @@ export type PropertyWhereInput = {
   location?: Prisma.StringFilter<"Property"> | string
   price?: Prisma.IntFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
+  thumbnail?: Prisma.StringNullableFilter<"Property"> | string | null
+  images?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
@@ -273,6 +285,8 @@ export type PropertyOrderByWithRelationInput = {
   location?: Prisma.SortOrder
   price?: Prisma.SortOrder
   amenities?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -294,6 +308,8 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   location?: Prisma.StringFilter<"Property"> | string
   price?: Prisma.IntFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
+  thumbnail?: Prisma.StringNullableFilter<"Property"> | string | null
+  images?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
@@ -312,6 +328,8 @@ export type PropertyOrderByWithAggregationInput = {
   location?: Prisma.SortOrder
   price?: Prisma.SortOrder
   amenities?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -334,6 +352,8 @@ export type PropertyScalarWhereWithAggregatesInput = {
   location?: Prisma.StringWithAggregatesFilter<"Property"> | string
   price?: Prisma.IntWithAggregatesFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
+  thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  images?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusWithAggregatesFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
@@ -348,6 +368,8 @@ export type PropertyCreateInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -364,6 +386,8 @@ export type PropertyUncheckedCreateInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -380,6 +404,8 @@ export type PropertyUpdateInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -396,6 +422,8 @@ export type PropertyUncheckedUpdateInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -412,6 +440,8 @@ export type PropertyCreateManyInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -426,6 +456,8 @@ export type PropertyUpdateManyMutationInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -438,6 +470,8 @@ export type PropertyUncheckedUpdateManyInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -470,6 +504,8 @@ export type PropertyCountOrderByAggregateInput = {
   location?: Prisma.SortOrder
   price?: Prisma.SortOrder
   amenities?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -487,6 +523,7 @@ export type PropertyMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -500,6 +537,7 @@ export type PropertyMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -562,6 +600,10 @@ export type PropertyCreateamenitiesInput = {
   set: string[]
 }
 
+export type PropertyCreateimagesInput = {
+  set: string[]
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -571,6 +613,11 @@ export type IntFieldUpdateOperationsInput = {
 }
 
 export type PropertyUpdateamenitiesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type PropertyUpdateimagesInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -656,6 +703,8 @@ export type PropertyCreateWithoutCategoryInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -671,6 +720,8 @@ export type PropertyUncheckedCreateWithoutCategoryInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -715,6 +766,8 @@ export type PropertyScalarWhereInput = {
   location?: Prisma.StringFilter<"Property"> | string
   price?: Prisma.IntFilter<"Property"> | number
   amenities?: Prisma.StringNullableListFilter<"Property">
+  thumbnail?: Prisma.StringNullableFilter<"Property"> | string | null
+  images?: Prisma.StringNullableListFilter<"Property">
   isAvailable?: Prisma.EnumAvailabilityStatusFilter<"Property"> | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
@@ -729,6 +782,8 @@ export type PropertyCreateWithoutRentalRequestsInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -744,6 +799,8 @@ export type PropertyUncheckedCreateWithoutRentalRequestsInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -775,6 +832,8 @@ export type PropertyUpdateWithoutRentalRequestsInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -790,6 +849,8 @@ export type PropertyUncheckedUpdateWithoutRentalRequestsInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -805,6 +866,8 @@ export type PropertyCreateWithoutReviewsInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -820,6 +883,8 @@ export type PropertyUncheckedCreateWithoutReviewsInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -851,6 +916,8 @@ export type PropertyUpdateWithoutReviewsInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -866,6 +933,8 @@ export type PropertyUncheckedUpdateWithoutReviewsInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -881,6 +950,8 @@ export type PropertyCreateWithoutLandLordInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -896,6 +967,8 @@ export type PropertyUncheckedCreateWithoutLandLordInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -937,6 +1010,8 @@ export type PropertyCreateManyCategoryInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -950,6 +1025,8 @@ export type PropertyUpdateWithoutCategoryInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -965,6 +1042,8 @@ export type PropertyUncheckedUpdateWithoutCategoryInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -980,6 +1059,8 @@ export type PropertyUncheckedUpdateManyWithoutCategoryInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -993,6 +1074,8 @@ export type PropertyCreateManyLandLordInput = {
   location: string
   price: number
   amenities?: Prisma.PropertyCreateamenitiesInput | string[]
+  thumbnail?: string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
   isAvailable?: $Enums.AvailabilityStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1006,6 +1089,8 @@ export type PropertyUpdateWithoutLandLordInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1021,6 +1106,8 @@ export type PropertyUncheckedUpdateWithoutLandLordInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1036,6 +1123,8 @@ export type PropertyUncheckedUpdateManyWithoutLandLordInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   amenities?: Prisma.PropertyUpdateamenitiesInput | string[]
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
   isAvailable?: Prisma.EnumAvailabilityStatusFieldUpdateOperationsInput | $Enums.AvailabilityStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1089,6 +1178,8 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   location?: boolean
   price?: boolean
   amenities?: boolean
+  thumbnail?: boolean
+  images?: boolean
   isAvailable?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1108,6 +1199,8 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   location?: boolean
   price?: boolean
   amenities?: boolean
+  thumbnail?: boolean
+  images?: boolean
   isAvailable?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1124,6 +1217,8 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   location?: boolean
   price?: boolean
   amenities?: boolean
+  thumbnail?: boolean
+  images?: boolean
   isAvailable?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1140,6 +1235,8 @@ export type PropertySelectScalar = {
   location?: boolean
   price?: boolean
   amenities?: boolean
+  thumbnail?: boolean
+  images?: boolean
   isAvailable?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1147,7 +1244,7 @@ export type PropertySelectScalar = {
   landLordId?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "price" | "amenities" | "isAvailable" | "createdAt" | "updatedAt" | "categoryId" | "landLordId", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "price" | "amenities" | "thumbnail" | "images" | "isAvailable" | "createdAt" | "updatedAt" | "categoryId" | "landLordId", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   landLord?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1179,6 +1276,8 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     location: string
     price: number
     amenities: string[]
+    thumbnail: string | null
+    images: string[]
     isAvailable: $Enums.AvailabilityStatus
     createdAt: Date
     updatedAt: Date
@@ -1617,6 +1716,8 @@ export interface PropertyFieldRefs {
   readonly location: Prisma.FieldRef<"Property", 'String'>
   readonly price: Prisma.FieldRef<"Property", 'Int'>
   readonly amenities: Prisma.FieldRef<"Property", 'String[]'>
+  readonly thumbnail: Prisma.FieldRef<"Property", 'String'>
+  readonly images: Prisma.FieldRef<"Property", 'String[]'>
   readonly isAvailable: Prisma.FieldRef<"Property", 'AvailabilityStatus'>
   readonly createdAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Property", 'DateTime'>

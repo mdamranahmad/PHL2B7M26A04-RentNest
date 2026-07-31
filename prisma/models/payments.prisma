@@ -14,7 +14,7 @@ model Payment {
   rentalRequestId String
   rentalRequest   RentalRequest @relation(fields: [rentalRequestId], references: [id], onDelete: Cascade)
 
-  customerId String 
+  customerId String
   customer   User   @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@map("payments")
