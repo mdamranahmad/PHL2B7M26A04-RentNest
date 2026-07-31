@@ -8,6 +8,7 @@ import { AppError } from "../../middlewares/appError";
 import httpstatus from "http-status";
 import { rentalRequestServices } from "./rental.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { IRentalRequest } from "./rentals.interface";
 
 const submitRentalRequest = catchAsync(async (req: Request, res: Response) => {
     if (!req.user) {
@@ -38,6 +39,7 @@ const submitRentalRequest = catchAsync(async (req: Request, res: Response) => {
 
 const getRentalRequestsByUserId = catchAsync(
     async (req: Request, res: Response) => {
+        const query = req.query;
         if (!req.user) {
             throw new AppError(
                 httpstatus.UNAUTHORIZED,
@@ -48,7 +50,11 @@ const getRentalRequestsByUserId = catchAsync(
         const { id, role } = req.user;
 
         const rentalRequestsForUser =
-            await rentalRequestServices.getRentalRequestsByUserId(id, role);
+            await rentalRequestServices.getRentalRequestsByUserId(
+                id,
+                role,
+                query,
+            );
 
         sendResponse(res, {
             success: true,

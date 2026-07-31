@@ -1,7 +1,13 @@
-import { Role } from "../../../generated/prisma/enums";
+import {
+    PaymentStatus,
+    RentRequestStatus,
+    Role,
+} from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import httpStatus from "http-status";
+import { IRentalRequest } from "./rentals.interface";
+import { RentalRequestWhereInput } from "../../../generated/prisma/models";
 
 // ================================================================
 // A function to submit a rental requests for  property listings in the system
@@ -49,18 +55,102 @@ const submitRentalRequest = async (propertyId: string, tenantId: string) => {
 // A function to get all rental requests for a tenant in the system
 // ================================================================
 
-const getRentalRequestsByUserId = async (userId: string, role: Role) => {
-    if (role === Role.ADMIN) {
-        return await prisma.rentalRequest.findMany();
-    }
+const getRentalRequestsByUserId = async (
+    userId: string,
+    role: Role,
+    query: IRentalRequest,
+) => {
+    const limit = query.limit ? Number(query.limit) : 10;
+    const page = query.page ? Number(query.page) : 1;
+    const skip = (page - 1) * limit;
+    const sortBy = query.sortBy ? query.sortBy : "createdAt";
+    const sortOrder = query.sortOrder ? query.sortOrder : "desc";
+
+    let roleCondition: RentalRequestWhereInput = {};
 
     if (role === Role.LANDLORD) {
-        return await prisma.rentalRequest.findMany({
-            where: { landLordId: userId },
+        roleCondition = { landLordId: userId };
+    } else if (role === Role.TENANT) {
+        roleCondition = { tenantId: userId };
+    }
+
+    const searchCondition: RentalRequestWhereInput[] = [];
+
+    if (query.searchTerm && typeof query.searchTerm === "string") {
+        const upperSearchTerm = query.searchTerm.toUpperCase();
+        const isValidRentRequestEnum = Object.values(
+            RentRequestStatus,
+        ).includes(upperSearchTerm as RentRequestStatus);
+
+        searchCondition.push(
+            {
+                landLord: {
+                    name: { contains: query.searchTerm, mode: "insensitive" },
+                },
+            },
+            {
+                tenant: {
+                    name: { contains: query.searchTerm, mode: "insensitive" },
+                },
+            },
+            {
+                property: {
+                    title: { contains: query.searchTerm, mode: "insensitive" },
+                },
+            },
+        );
+
+        if (isValidRentRequestEnum) {
+            searchCondition.push({
+                rentRequestStatus: upperSearchTerm as RentRequestStatus,
+            });
+        }
+    }
+
+    const filterConditions: RentalRequestWhereInput[] = [];
+
+    if (query.rentRequestStatus) {
+        filterConditions.push({
+            rentRequestStatus: (
+                query.rentRequestStatus as string
+            ).toUpperCase() as RentRequestStatus,
         });
     }
 
-    return await prisma.rentalRequest.findMany({ where: { tenantId: userId } });
+    const whereConditions: RentalRequestWhereInput = {
+        AND: [
+            roleCondition,
+            ...filterConditions,
+            ...(searchCondition.length > 0 ? [{ OR: searchCondition }] : []),
+        ],
+    };
+
+    const total = await prisma.rentalRequest.count({
+        where: whereConditions,
+    });
+
+    const result = await prisma.rentalRequest.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: { [sortBy]: sortOrder },
+        include: {
+            landLord: { select: { id: true, name: true, email: true } },
+            tenant: { select: { id: true, name: true, email: true } },
+            property: { select: { title: true, location: true, price: true } },
+            payments: { select: { status: true } },
+        },
+    });
+
+    return {
+        metadata: {
+            page,
+            limit,
+            total,
+            totalPage: Math.ceil(total / limit),
+        },
+        RentalRequests: result,
+    };
 };
 // ================================================================
 // A function to get details of a rental request by rental request id in the system
