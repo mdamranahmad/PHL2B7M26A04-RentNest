@@ -5,7 +5,7 @@ import { ILoginUser, IUser } from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import { jwtUtils } from "../../utils/jwt";
-import { SignOptions } from "jsonwebtoken";
+import { JwtHeader, JwtPayload, SignOptions } from "jsonwebtoken";
 
 // ================================================================
 // A function to register user into the system
@@ -96,6 +96,56 @@ const loginUser = async (payload: ILoginUser) => {
 
     return { accessToken, refreshToken };
 };
+// ================================================================
+// A function to login user with refreshToken into the system
+// ================================================================
+const loginUserWithRefreshToken = async (token: string) => {
+    const verifiedRefreshToken = jwtUtils.tokenVerification(
+        token,
+        config.jwt_refresh_secret_key,
+    );
+
+    if (!verifiedRefreshToken) {
+        throw new AppError(httpStatus.NOT_FOUND, "Invalid Refresh Token!");
+    }
+
+    const { id, name, email, role } = verifiedRefreshToken as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+            name,
+            email,
+            role,
+        },
+        select: { id: true, name: true, email: true, role: true, status: true },
+    });
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User Does Not Exists");
+    }
+
+    // Check if the user has proper access
+    if (user.status === "BANNED") {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Suspended");
+    }
+
+    const tokenPayload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+    };
+
+    // Generation of Access Token
+    const accessToken = jwtUtils.createToken(
+        tokenPayload,
+        config.jwt_secret_key,
+        config.jwt_secret_key_expires_in as SignOptions,
+    );
+
+    return { accessToken };
+};
 
 // ================================================================
 // A function to fetch user profile from the database
@@ -122,4 +172,5 @@ export const authService = {
     registerUser,
     loginUser,
     getProfile,
+    loginUserWithRefreshToken,
 };

@@ -54,6 +54,32 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
         data: { accessToken, refreshToken },
     });
 });
+// ================================================================
+// A function to login user with refresh token into the system
+// ================================================================
+const loginUserWithRefreshToken = catchAsync(
+    async (req: Request, res: Response) => {
+        const refrshToken = await req.cookies.refreshToken;
+        // validation of credential and fetch data from database
+        const { accessToken } =
+            await authService.loginUserWithRefreshToken(refrshToken);
+
+        // Storage of accessToken in browser cookies
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: config.node_env === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpstatus.OK,
+            message: "User Login Successfull",
+            data: { accessToken },
+        });
+    },
+);
 
 // ================================================================
 // A function to fetch user profile from the database
@@ -76,4 +102,5 @@ export const authController = {
     registerUser,
     loginUser,
     getProfile,
+    loginUserWithRefreshToken,
 };
