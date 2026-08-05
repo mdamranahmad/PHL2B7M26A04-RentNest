@@ -9,6 +9,8 @@ export interface IProperties {
     location: string;
     price: number;
     amenities?: string[];
+    thumbnail?: string;
+    images?: string[];
     isAvailable?: AvailabilityStatus;
     category?: CategoryType;
     landLordId?: string;
