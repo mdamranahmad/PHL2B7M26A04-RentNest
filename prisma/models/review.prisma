@@ -1,12 +1,10 @@
 model Review {
-  id      String  @id @default(uuid())
-  rating  Int
-  comment String?
-
+  id         String   @id @default(uuid())
+  rating     Int
+  comment    String?
   // Relations
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id])
-
   reviewerId String
   reviewer   Tenant   @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 

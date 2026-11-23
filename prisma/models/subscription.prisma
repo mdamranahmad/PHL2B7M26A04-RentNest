@@ -1,17 +1,13 @@
 model Subscription {
-  id String @id @default(uuid())
-
-  subscriberId String @unique
-  subscriber   Tenant @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
-
-  currentPeriodEnd DateTime
-  status           SubscriptionStatus @default(ACTIVE)
-
+  id                   String             @id @default(uuid())
+  subscriberId         String             @unique
+  subscriber           Tenant             @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  currentPeriodEnd     DateTime
+  status               SubscriptionStatus @default(ACTIVE)
   // Stripe related id
-
   // Stripe customer id
-  stripeCustomerId     String @unique
-  stripeSubscriptionId String @unique
+  stripeCustomerId     String             @unique
+  stripeSubscriptionId String             @unique
   // stripe subscription id
 
   createdAt DateTime @default(now())

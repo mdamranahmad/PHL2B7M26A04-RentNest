@@ -50,7 +50,7 @@ app.use(cookieParser()); // Reads active JWT tokens, populates req.cookies
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
 });
-app.use("/api/auth", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/landlord", landlordRoutes);
 app.use("/api/admin", adminRoutes);

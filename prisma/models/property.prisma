@@ -1,5 +1,5 @@
 model Property {
-  id          String   @id @default(uuid())
+  id          String             @id @default(uuid())
   title       String
   description String
   location    String
@@ -8,15 +8,15 @@ model Property {
   thumbnail   String?
   images      String[]
   isAvailable AvailabilityStatus @default(Available)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   // Relations
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  landLordId String
-  landLord   Landlord   @relation(fields: [landLordId], references: [id], onDelete: Cascade)
-  bookings Bookings[]
-  reviews Review[]
+  categoryId  String
+  category    Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  landLordId  String
+  landLord    Landlord           @relation(fields: [landLordId], references: [id], onDelete: Cascade)
+  bookings    Bookings[]
+  reviews     Review[]
 
   @@index([location, price])
   @@map("properties")

@@ -1,9 +1,8 @@
 model Category {
   id           String       @id @default(uuid())
   categoryType CategoryType @unique
-
   // Relations
-  properties Property[]
+  properties   Property[]
 
   @@map("categories")
 }
