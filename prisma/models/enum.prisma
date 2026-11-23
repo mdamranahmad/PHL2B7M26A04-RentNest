@@ -10,7 +10,7 @@ enum CategoryType {
   STUDIO
 }
 
-enum RentRequestStatus {
+enum BookingStatus {
   PENDING
   APPROVED
   PAYMENT_PENDING

@@ -8,7 +8,7 @@ model Review {
   property   Property @relation(fields: [propertyId], references: [id])
 
   reviewerId String
-  reviewer   User   @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewer   Tenant   @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

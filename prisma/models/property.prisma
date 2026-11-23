@@ -7,21 +7,15 @@ model Property {
   amenities   String[]
   thumbnail   String?
   images      String[]
-
   isAvailable AvailabilityStatus @default(Available)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   // Relations
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
   landLordId String
-  landLord   User   @relation(fields: [landLordId], references: [id], onDelete: Cascade)
-
-  rentalRequests RentalRequest[]
-
+  landLord   Landlord   @relation(fields: [landLordId], references: [id], onDelete: Cascade)
+  bookings Bookings[]
   reviews Review[]
 
   @@index([location, price])
