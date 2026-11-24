@@ -27,7 +27,7 @@ export const CategoryType = {
 export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]
 
 
-export const RentRequestStatus = {
+export const BookingStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   PAYMENT_PENDING: 'PAYMENT_PENDING',
@@ -38,7 +38,7 @@ export const RentRequestStatus = {
   TERMINATED: 'TERMINATED'
 } as const
 
-export type RentRequestStatus = (typeof RentRequestStatus)[keyof typeof RentRequestStatus]
+export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
 
 export const PaymentMethodProvider = {

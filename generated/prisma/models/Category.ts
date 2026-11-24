@@ -251,10 +251,6 @@ export type CategoryScalarRelationFilter = {
   isNot?: Prisma.CategoryWhereInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type EnumCategoryTypeFieldUpdateOperationsInput = {
   set?: $Enums.CategoryType
 }

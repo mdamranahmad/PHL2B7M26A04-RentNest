@@ -1,6 +1,6 @@
 import {
     PaymentStatus,
-    RentRequestStatus,
+    BookingStatus,
     Role,
 } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
@@ -79,8 +79,8 @@ const getRentalRequestsByUserId = async (
     if (query.searchTerm && typeof query.searchTerm === "string") {
         const upperSearchTerm = query.searchTerm.toUpperCase();
         const isValidRentRequestEnum = Object.values(
-            RentRequestStatus,
-        ).includes(upperSearchTerm as RentRequestStatus);
+            BookingStatus,
+        ).includes(upperSearchTerm as BookingStatus);
 
         searchCondition.push(
             {
@@ -102,7 +102,7 @@ const getRentalRequestsByUserId = async (
 
         if (isValidRentRequestEnum) {
             searchCondition.push({
-                rentRequestStatus: upperSearchTerm as RentRequestStatus,
+                rentRequestStatus: upperSearchTerm as BookingStatus,
             });
         }
     }

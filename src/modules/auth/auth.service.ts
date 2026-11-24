@@ -1,29 +1,25 @@
 import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
-import { ILoginUser, IUser } from "./auth.interface";
+import { ILoginUser, IUser, IUserRegisterPayload } from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import { jwtUtils } from "../../utils/jwt";
 import { JwtHeader, JwtPayload, SignOptions } from "jsonwebtoken";
+import crypto from "crypto";
+import { redisClient } from "../../lib/redis";
 
 // ================================================================
 // A function to register user into the system
 // ================================================================
-const registerUser = async (payload: IUser) => {
+const registerUser = async (payload: IUserRegisterPayload) => {
     // Striping password and relations which are unavailale during registration from payload
-    const {
-        password,
-        tenantRequests,
-        landLordRequests,
-        properties,
-        reviews,
-        ...userPayload
-    } = payload;
+    const { name, email, password } = payload;
 
     // Checks if the user already exists in the system
     const isUserExists = await prisma.user.findUnique({
         where: { email: payload.email },
+        select: { id: true, email: true },
     });
 
     if (isUserExists) {
@@ -36,18 +32,33 @@ const registerUser = async (payload: IUser) => {
         Number(config.bcrypt_salt_rounds),
     );
 
-    // Register user into the system
-    const registeredUser = await prisma.user.create({
-        data: { ...userPayload, passwordHash },
+    // // Register user into the system
+    // const registeredUser = await prisma.user.create({
+    //     data: { ...userPayload, passwordHash },
+    // });
+
+    // Cache user data in redis for email verification
+    const otpKey = `registration-otp: ${email}`;
+    const otpValue = crypto.randomInt(100000, 1000000);
+
+    if (config.node_env === "development") {
+        console.log(`${otpKey}: ${otpValue}`);
+    }
+
+    await redisClient.set(otpKey, otpValue, {
+        expiration: {
+            type: "EX",
+            value: 60 * 5,
+        },
     });
 
-    // Fetch Registered user from database
-    const user = await prisma.user.findUnique({
-        where: { id: registeredUser.id },
-        omit: { passwordHash: true },
-    });
+    // // Fetch Registered user from database
+    // const user = await prisma.user.findUnique({
+    //     where: { id: registeredUser.id },
+    //     omit: { passwordHash: true },
+    // });
 
-    return user;
+    // return user;
 };
 
 // ================================================================

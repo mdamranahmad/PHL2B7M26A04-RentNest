@@ -17,7 +17,7 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.CREATED,
-        message: "User Registered Successfully.",
+        message: "OTP sent to email for verification",
         data: user,
     });
 });

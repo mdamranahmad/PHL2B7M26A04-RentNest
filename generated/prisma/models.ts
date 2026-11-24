@@ -8,11 +8,13 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Bookings'
 export type * from './models/Category'
+export type * from './models/Landlord'
 export type * from './models/Payment'
 export type * from './models/Property'
-export type * from './models/RentalRequest'
 export type * from './models/Review'
 export type * from './models/Subscription'
+export type * from './models/Tenant'
 export type * from './models/User'
 export type * from './commonInputTypes'
