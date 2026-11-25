@@ -29,4 +29,8 @@ export default {
     redis_socket_host: process.env.REDIS_SOCKET_HOST,
     redis_socket_port: process.env.REDIS_SOCKET_PORT,
 
+    // SMTP Credentials
+    smtp_user: process.env.SMTP_USER,
+    smtp_password: process.env.SMTP_PASSWORD,
+    email_sender: process.env.EMAIL_SENDER,
 };

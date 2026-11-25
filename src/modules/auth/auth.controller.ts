@@ -12,13 +12,13 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
 
     // register and fetch registered userdata from database
-    const user = await authService.registerUser(payload);
+    await authService.registerUser(payload);
 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.CREATED,
         message: "OTP sent to email for verification",
-        data: user,
+        data: null,
     });
 });
 

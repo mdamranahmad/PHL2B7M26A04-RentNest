@@ -1,13 +1,16 @@
 import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
-import { ILoginUser, IUser, IUserRegisterPayload } from "./auth.interface";
+import { ILoginUser, IUserRegisterPayload } from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import { jwtUtils } from "../../utils/jwt";
 import { JwtHeader, JwtPayload, SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import { redisClient } from "../../lib/redis";
+import { transporter } from "../../lib/nodemailer";
+import path from "path";
+import ejs from "ejs";
 
 // ================================================================
 // A function to register user into the system
@@ -52,13 +55,27 @@ const registerUser = async (payload: IUserRegisterPayload) => {
         },
     });
 
-    // // Fetch Registered user from database
-    // const user = await prisma.user.findUnique({
-    //     where: { id: registeredUser.id },
-    //     omit: { passwordHash: true },
-    // });
+    const templatePath = path.join(
+        process.cwd(),
+        "src/templates/verify-email.ejs",
+    );
 
-    // return user;
+    const html = await ejs.renderFile(templatePath, {
+        appName: "RentNest",
+        name,
+        otpValue,
+        expiresIn: "5 Minutes",
+        supportEmail: "support@rentnest.com",
+    });
+
+    await transporter.sendMail({
+        from: config.email_sender,
+        to: email,
+        subject: "Verify Your Email Address",
+        html,
+    });
+
+    return null;
 };
 
 // ================================================================
