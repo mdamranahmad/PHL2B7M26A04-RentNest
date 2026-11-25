@@ -1,16 +1,22 @@
 import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
-import { ILoginUser, IUserRegisterPayload } from "./auth.interface";
+import {
+    ILoginUser,
+    IRedisRegisterPayload,
+    IUserRegisterPayload,
+    IVerifyEmail,
+} from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import { jwtUtils } from "../../utils/jwt";
-import { JwtHeader, JwtPayload, SignOptions } from "jsonwebtoken";
+import { JwtPayload, SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 import { redisClient } from "../../lib/redis";
 import { transporter } from "../../lib/nodemailer";
 import path from "path";
 import ejs from "ejs";
+import { Role } from "../../../generated/prisma/enums";
 
 // ================================================================
 // A function to register user into the system
@@ -41,14 +47,15 @@ const registerUser = async (payload: IUserRegisterPayload) => {
     // });
 
     // Cache user data in redis for email verification
-    const otpKey = `registration-otp: ${email}`;
+    const redisPayloadKey = `registration-payload: ${email}`;
     const otpValue = crypto.randomInt(100000, 1000000);
+    const redisPayload = { name, email, passwordHash, otpValue };
 
     if (config.node_env === "development") {
-        console.log(`${otpKey}: ${otpValue}`);
+        console.log(`${redisPayload.email}: ${otpValue}`);
     }
 
-    await redisClient.set(otpKey, otpValue, {
+    await redisClient.set(redisPayloadKey, JSON.stringify(redisPayload), {
         expiration: {
             type: "EX",
             value: 60 * 5,
@@ -76,6 +83,56 @@ const registerUser = async (payload: IUserRegisterPayload) => {
     });
 
     return null;
+};
+
+// ================================================================
+// A function to verify email for newly registered user
+// ================================================================
+const verifyEmail = async (payload: IVerifyEmail) => {
+    const { email, otp } = payload;
+
+    // Checks if the user already exists in the system
+    const isUserExists = await prisma.user.findUnique({
+        where: { email: payload.email },
+        select: { id: true, email: true },
+    });
+
+    if (isUserExists) {
+        throw new AppError(httpStatus.CONFLICT, "User Already Exists.");
+    }
+
+    // Check user data in redis for email verification
+    const redisPayloadKey = `registration-payload: ${email}`;
+
+    const redisPayloadJson = await redisClient.get(redisPayloadKey);
+
+    if (!redisPayloadJson) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Something went wrong! Please register again",
+        );
+    }
+
+    const redisPayload: IRedisRegisterPayload = JSON.parse(redisPayloadJson);
+
+    if (redisPayload.otpValue !== otp) {
+        throw new AppError(httpStatus.BAD_REQUEST, "OTP does not match!");
+    }
+
+    const user = await prisma.user.create({
+        data: {
+            name: redisPayload.name,
+            email: redisPayload.email,
+            passwordHash: redisPayload.passwordHash,
+            role: Role.TENANT,
+            emailVerified: true,
+        },
+        select: { id: true, name: true, email: true, role: true },
+    });
+
+    await redisClient.del(redisPayloadKey);
+
+    return user;
 };
 
 // ================================================================
@@ -198,6 +255,7 @@ const getProfile = async (userId: string) => {
 
 export const authService = {
     registerUser,
+    verifyEmail,
     loginUser,
     getProfile,
     loginUserWithRefreshToken,

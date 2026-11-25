@@ -21,6 +21,18 @@ export interface IUserRegisterPayload {
     password: string;
 }
 
+export interface IVerifyEmail {
+    email: string;
+    otp: string;
+}
+
+export interface IRedisRegisterPayload {
+    name: string;
+    email: string;
+    passwordHash: string;
+    otpValue: string;
+}
+
 export interface ILoginUser {
     email: string;
     password: string;

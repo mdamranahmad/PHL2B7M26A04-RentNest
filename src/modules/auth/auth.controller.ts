@@ -16,9 +16,25 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
 
     sendResponse(res, {
         success: true,
-        statusCode: httpstatus.CREATED,
+        statusCode: httpstatus.OK,
         message: "OTP sent to email for verification",
         data: null,
+    });
+});
+
+// ================================================================
+// A function to verify email for the newly registered user
+// ================================================================
+const verifyEmail = catchAsync(async (req: Request, res: Response) => {
+    const payload = req.body;
+
+    const user = await authService.verifyEmail(payload);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.CREATED,
+        message: "User Registration Successfull.",
+        data: user,
     });
 });
 
@@ -100,6 +116,7 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
 
 export const authController = {
     registerUser,
+    verifyEmail,
     loginUser,
     getProfile,
     loginUserWithRefreshToken,
