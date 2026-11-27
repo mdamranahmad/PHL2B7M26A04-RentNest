@@ -132,6 +132,24 @@ const verifyEmail = async (payload: IVerifyEmail) => {
 
     await redisClient.del(redisPayloadKey);
 
+    const templatePath = path.join(
+        process.cwd(),
+        "src/templates/welcome-email.ejs",
+    );
+
+    const html = await ejs.renderFile(templatePath, {
+        appName: "RentNest",
+        name: user.name,
+        supportEmail: "support@rentnest.com",
+    });
+
+    await transporter.sendMail({
+        from: config.email_sender,
+        to: user.email,
+        subject: "Welcome to RentNest",
+        html,
+    });
+
     return user;
 };
 
