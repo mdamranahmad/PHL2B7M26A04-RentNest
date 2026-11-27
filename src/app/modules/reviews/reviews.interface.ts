@@ -1,4 +1,4 @@
-import { ReviewWhereInput } from "../../../generated/prisma/models";
+import { ReviewWhereInput } from "../../../../generated/prisma/models";
 
 export interface IReview {
     rating: number;

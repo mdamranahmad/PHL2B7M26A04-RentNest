@@ -1,5 +1,5 @@
 import { SignOptions } from "jsonwebtoken";
-import { Role } from "../../generated/prisma/enums";
+import { Role } from "../../../generated/prisma/enums";
 import config from "../config";
 import { jwtUtils } from "./jwt";
 

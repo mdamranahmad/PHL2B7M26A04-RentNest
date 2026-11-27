@@ -1,4 +1,4 @@
-import { RentalRequestWhereInput } from "../../../generated/prisma/models";
+import { RentalRequestWhereInput } from "../../../../generated/prisma/models";
 
 export interface IRentalRequest extends RentalRequestWhereInput {
     searchTerm?: string;

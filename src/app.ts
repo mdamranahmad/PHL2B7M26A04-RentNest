@@ -1,19 +1,19 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import config from "./config";
+import config from "./app/config";
 import cookieParser from "cookie-parser";
-import { authRoutes } from "./modules/auth/auth.route";
-import { globalErrorHandler } from "./middlewares/globalErrorHandler";
-import { notFound } from "./middlewares/notFound";
-import { landlordRoutes } from "./modules/landlord/landlord.route";
-import { categoriesRoutes } from "./modules/categories/categories.route";
-import { adminRoutes } from "./modules/admin/admin.route";
-import { propertyRoutes } from "./modules/properties/properties.route";
-import { adminController } from "./modules/admin/admin.controller";
-import { categoriesController } from "./modules/categories/categories.controller";
-import { rentalRequestRoutes } from "./modules/rentals/rentals.route";
-import { paymentRoutes } from "./modules/payment/payment.route";
-import { reviewRoutes } from "./modules/reviews/reviews.route";
+import { authRoutes } from "./app/modules/auth/auth.route";
+import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
+import { notFound } from "./app/middlewares/notFound";
+import { landlordRoutes } from "./app/modules/landlord/landlord.route";
+import { categoriesRoutes } from "./app/modules/categories/categories.route";
+import { adminRoutes } from "./app/modules/admin/admin.route";
+import { propertyRoutes } from "./app/modules/properties/properties.route";
+import { adminController } from "./app/modules/admin/admin.controller";
+import { categoriesController } from "./app/modules/categories/categories.controller";
+import { rentalRequestRoutes } from "./app/modules/rentals/rentals.route";
+import { paymentRoutes } from "./app/modules/payment/payment.route";
+import { reviewRoutes } from "./app/modules/reviews/reviews.route";
 
 const app: Application = express();
 

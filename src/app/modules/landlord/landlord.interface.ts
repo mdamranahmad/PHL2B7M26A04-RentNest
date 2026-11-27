@@ -1,7 +1,7 @@
 import {
     AvailabilityStatus,
     CategoryType,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 
 export interface IProperties {
     title: string;

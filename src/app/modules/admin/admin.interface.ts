@@ -1,12 +1,12 @@
-import { Category, User } from "../../../generated/prisma/client";
+import { Category, User } from "../../../../generated/prisma/client";
 import {
     AvailabilityStatus,
     UserStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import {
     PropertyWhereInput,
     UserWhereInput,
-} from "../../../generated/prisma/models";
+} from "../../../../generated/prisma/models";
 
 export interface IUpdateStatus {
     status: UserStatus;

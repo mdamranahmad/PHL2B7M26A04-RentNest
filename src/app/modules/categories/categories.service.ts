@@ -1,4 +1,4 @@
-import { CategoryType } from "../../../generated/prisma/enums";
+import { CategoryType } from "../../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import httpStatus from "http-status";
@@ -16,7 +16,6 @@ const getAllCategories = async () => {
 // A function to add new category to the database
 // ================================================================
 const addCategory = async (categoryType: CategoryType) => {
-
     const createdCategory = await prisma.category.create({
         data: { categoryType },
     });

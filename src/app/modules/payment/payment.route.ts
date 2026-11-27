@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { paymentController } from "./payment.controller";
 import { auth } from "../../middlewares/auth";
-import { Role } from "../../../generated/prisma/enums";
+import { Role } from "../../../../generated/prisma/enums";
 
 const router = Router();
 
@@ -17,7 +17,15 @@ router.get(
     auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
     paymentController.getSubscriptionStatus,
 );
-router.get("/", auth(Role.ADMIN, Role.LANDLORD, Role.TENANT), paymentController.getPaymentHistory);
-router.get("/:id", auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),paymentController.getPaymentDetails);
+router.get(
+    "/",
+    auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
+    paymentController.getPaymentHistory,
+);
+router.get(
+    "/:id",
+    auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
+    paymentController.getPaymentDetails,
+);
 
 export const paymentRoutes = router;

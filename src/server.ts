@@ -1,8 +1,8 @@
 import app from "./app";
-import config from "./config";
-import { transporter } from "./lib/nodemailer";
-import { prisma } from "./lib/prisma";
-import { redisClient } from "./lib/redis";
+import config from "./app/config";
+import { transporter } from "./app/lib/nodemailer";
+import { prisma } from "./app/lib/prisma";
+import { redisClient } from "./app/lib/redis";
 
 async function main() {
     try {

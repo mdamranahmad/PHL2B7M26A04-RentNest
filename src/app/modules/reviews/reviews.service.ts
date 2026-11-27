@@ -1,4 +1,4 @@
-import { ReviewWhereInput } from "../../../generated/prisma/models";
+import { ReviewWhereInput } from "../../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import { IReview, IReviewQuery } from "./reviews.interface";
@@ -23,7 +23,7 @@ const postReview = async (payload: IReview, reviewerId: string) => {
                 some: {
                     propertyId,
                     AND: { payments: { some: { status: "COMPLETED" } } },
-                    rentRequestStatus: "APPROVED"
+                    rentRequestStatus: "APPROVED",
                 },
             },
         },

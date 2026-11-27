@@ -21,7 +21,7 @@ import {
     AuthProvider,
     Role,
     UserStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { googleClient } from "../../lib/googleAuth";
 import { TokenPayload } from "google-auth-library";
 import { accessRefreshTokenGenerate } from "../../utils/accessRefreshTokenGenerate";
@@ -72,7 +72,7 @@ const registerUser = async (payload: IUserRegisterPayload) => {
 
     const templatePath = path.join(
         process.cwd(),
-        "src/templates/verify-email.ejs",
+        "src/app/templates/verify-email.ejs",
     );
 
     const html = await ejs.renderFile(templatePath, {
@@ -148,7 +148,7 @@ const verifyEmail = async (payload: IVerifyEmail) => {
 
     const templatePath = path.join(
         process.cwd(),
-        "src/templates/welcome-email.ejs",
+        "src/app/templates/welcome-email.ejs",
     );
 
     const html = await ejs.renderFile(templatePath, {

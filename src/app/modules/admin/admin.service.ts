@@ -3,13 +3,13 @@ import {
     CategoryType,
     Role,
     UserStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { IPropertyQuery, IUpdateStatus, IUserQuery } from "./admin.interface";
 import {
     PropertyWhereInput,
     UserWhereInput,
-} from "../../../generated/prisma/models";
+} from "../../../../generated/prisma/models";
 
 // ================================================================
 // A function to get all users profile from the system

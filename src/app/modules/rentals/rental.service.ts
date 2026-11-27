@@ -2,12 +2,12 @@ import {
     PaymentStatus,
     BookingStatus,
     Role,
-} from "../../../generated/prisma/enums";
+} from "../../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import httpStatus from "http-status";
 import { IRentalRequest } from "./rentals.interface";
-import { RentalRequestWhereInput } from "../../../generated/prisma/models";
+import { RentalRequestWhereInput } from "../../../../generated/prisma/models";
 
 // ================================================================
 // A function to submit a rental requests for  property listings in the system
@@ -78,9 +78,9 @@ const getRentalRequestsByUserId = async (
 
     if (query.searchTerm && typeof query.searchTerm === "string") {
         const upperSearchTerm = query.searchTerm.toUpperCase();
-        const isValidRentRequestEnum = Object.values(
-            BookingStatus,
-        ).includes(upperSearchTerm as BookingStatus);
+        const isValidRentRequestEnum = Object.values(BookingStatus).includes(
+            upperSearchTerm as BookingStatus,
+        );
 
         searchCondition.push(
             {

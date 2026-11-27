@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "../../middlewares/auth";
-import { Role } from "../../../generated/prisma/enums";
+import { Role } from "../../../../generated/prisma/enums";
 import { landlordController } from "./landlord.controller";
 
 const router = Router();
@@ -13,9 +13,6 @@ router.post("/properties", landlordController.createProperties);
 router.put("/properties/:id", landlordController.updateProperties);
 router.delete("/properties/:id", landlordController.deleteProperties);
 router.get("/requests", landlordController.rentalRequestsForLandlord);
-router.patch(
-    "/requests/:id",
-    landlordController.updateRentRequestStatus,
-);
+router.patch("/requests/:id", landlordController.updateRentRequestStatus);
 
 export const landlordRoutes = router;
