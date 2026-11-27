@@ -13,6 +13,7 @@ router.post(
     authController.registerUser,
 );
 router.post("/verify-email", authController.verifyEmail);
+router.post("/google", authController.googleLogin);
 router.post("/login", authController.loginUser);
 router.post("/refresh-login", authController.loginUserWithRefreshToken);
 router.get(

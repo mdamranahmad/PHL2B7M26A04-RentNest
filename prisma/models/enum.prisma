@@ -50,3 +50,11 @@ enum SubscriptionStatus {
   CANCELLED
   EXPIRED
 }
+
+enum AuthProvider {
+  CREDENTIAL
+  GOOGLE
+  FACEBOOK
+  LINKEDIN
+  GITHUB
+}

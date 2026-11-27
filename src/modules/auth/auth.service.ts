@@ -2,6 +2,7 @@ import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import {
+    IGoogleLoginPayload,
     ILoginUser,
     IRedisRegisterPayload,
     IUserRegisterPayload,
@@ -16,7 +17,14 @@ import { redisClient } from "../../lib/redis";
 import { transporter } from "../../lib/nodemailer";
 import path from "path";
 import ejs from "ejs";
-import { Role } from "../../../generated/prisma/enums";
+import {
+    AuthProvider,
+    Role,
+    UserStatus,
+} from "../../../generated/prisma/enums";
+import { googleClient } from "../../lib/googleAuth";
+import { TokenPayload } from "google-auth-library";
+import { accessRefreshTokenGenerate } from "../../utils/accessRefreshTokenGenerate";
 
 // ================================================================
 // A function to register user into the system
@@ -126,6 +134,12 @@ const verifyEmail = async (payload: IVerifyEmail) => {
             passwordHash: redisPayload.passwordHash,
             role: Role.TENANT,
             emailVerified: true,
+            tenant: {
+                create: {
+                    name: redisPayload.name,
+                    email: redisPayload.email,
+                },
+            },
         },
         select: { id: true, name: true, email: true, role: true },
     });
@@ -150,7 +164,160 @@ const verifyEmail = async (payload: IVerifyEmail) => {
         html,
     });
 
-    return user;
+    const tokenPayload = {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+    };
+
+    const { accessToken, refreshToken } =
+        accessRefreshTokenGenerate(tokenPayload);
+
+    return { accessToken, refreshToken };
+};
+
+// ================================================================
+// A function to login user into the system using google oauth
+// ================================================================
+const googleLogin = async (payload: IGoogleLoginPayload) => {
+    // Get User Payload from Google
+    let googleIdTokenPayload: TokenPayload | null | undefined = null;
+    try {
+        const ticket = await googleClient.verifyIdToken({
+            idToken: payload.googleIdToken,
+            audience: config.google_client_id,
+        });
+
+        googleIdTokenPayload = ticket.getPayload();
+    } catch (error) {
+        console.log("Google IdToken Verification Failed! ", error);
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Invalid or Expired Google IdToken!",
+        );
+    }
+
+    // Check The Errors from Google Login
+    if (!googleIdTokenPayload) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Invalid or Expired Google IdToken!",
+        );
+    }
+
+    if (!googleIdTokenPayload.email) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Google Email Not Found!");
+    }
+
+    if (!googleIdTokenPayload.name) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Google Name Not Found!");
+    }
+
+    // Check if the user exists
+    const isUserExistsWithGoogleAuth = await prisma.user.findUnique({
+        where: {
+            email: googleIdTokenPayload.email,
+            role: Role.TENANT,
+            googleId: googleIdTokenPayload.sub,
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            emailVerified: true,
+            status: true,
+            isDeleted: true,
+        },
+    });
+
+    let user = isUserExistsWithGoogleAuth;
+
+    if (!isUserExistsWithGoogleAuth) {
+        const isUserExistsWithCredentials = await prisma.user.findUnique({
+            where: {
+                email: googleIdTokenPayload.email,
+                role: Role.TENANT,
+                authProvider: AuthProvider.CREDENTIAL,
+            },
+        });
+
+        if (isUserExistsWithCredentials) {
+            if (!isUserExistsWithCredentials?.emailVerified) {
+                throw new AppError(
+                    httpStatus.BAD_REQUEST,
+                    "Email not verified!",
+                );
+            }
+
+            if (isUserExistsWithCredentials?.status === UserStatus.BANNED) {
+                throw new AppError(
+                    httpStatus.BAD_REQUEST,
+                    "User has limited access!",
+                );
+            }
+
+            if (isUserExistsWithCredentials?.isDeleted) {
+                throw new AppError(httpStatus.BAD_REQUEST, "User is deleted!");
+            }
+
+            user = await prisma.user.update({
+                where: {
+                    id: isUserExistsWithCredentials.id,
+                },
+                data: {
+                    googleId: googleIdTokenPayload.sub,
+                },
+            });
+        } else {
+            user = await prisma.user.create({
+                data: {
+                    name: googleIdTokenPayload.name,
+                    email: googleIdTokenPayload.email,
+                    role: Role.TENANT,
+                    googleId: googleIdTokenPayload.sub,
+                    authProvider: AuthProvider.GOOGLE,
+                    profilePhoto: googleIdTokenPayload.picture,
+                    emailVerified: true,
+                    tenant: {
+                        create: {
+                            name: googleIdTokenPayload.name,
+                            email: googleIdTokenPayload.email,
+                        },
+                    },
+                },
+            });
+        }
+    }
+
+    if (!user) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
+    }
+
+    if (!user?.emailVerified) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Email not verified!");
+    }
+
+    if (user?.status === UserStatus.BANNED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User has limited access!");
+    }
+
+    if (user?.isDeleted) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User is deleted!");
+    }
+
+    const tokenPayload = {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+    };
+
+    const { accessToken, refreshToken } =
+        accessRefreshTokenGenerate(tokenPayload);
+
+    return { accessToken, refreshToken };
 };
 
 // ================================================================
@@ -274,6 +441,7 @@ const getProfile = async (userId: string) => {
 export const authService = {
     registerUser,
     verifyEmail,
+    googleLogin,
     loginUser,
     getProfile,
     loginUserWithRefreshToken,

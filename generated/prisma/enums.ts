@@ -84,3 +84,14 @@ export const SubscriptionStatus = {
 } as const
 
 export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
+export const AuthProvider = {
+  CREDENTIAL: 'CREDENTIAL',
+  GOOGLE: 'GOOGLE',
+  FACEBOOK: 'FACEBOOK',
+  LINKEDIN: 'LINKEDIN',
+  GITHUB: 'GITHUB'
+} as const
+
+export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]

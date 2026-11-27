@@ -4,6 +4,7 @@ import { authService } from "./auth.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpstatus from "http-status";
 import config from "../../config";
+import { defaultCookieOptions } from "../../config/cookie";
 
 // ================================================================
 // A function to register user into the system
@@ -28,13 +29,56 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
 
-    const user = await authService.verifyEmail(payload);
+    const { accessToken, refreshToken } =
+        await authService.verifyEmail(payload);
+
+    // Storage of accessToken in browser cookies
+    res.cookie("accessToken", accessToken, {
+        ...defaultCookieOptions,
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    // Storage of refreshToken in browser cookies
+    res.cookie("refreshToken", refreshToken, {
+        ...defaultCookieOptions,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.CREATED,
-        message: "User Registration Successfull.",
-        data: user,
+        message: "User Registration Successful.",
+        data: { accessToken, refreshToken },
+    });
+});
+
+// ================================================================
+// A function to login user into the system using google oauth
+// ================================================================
+const googleLogin = catchAsync(async (req: Request, res: Response) => {
+    const payload = req.body;
+
+    // validation of credential and fetch data from database
+    const { accessToken, refreshToken } =
+        await authService.googleLogin(payload);
+
+    // Storage of accessToken in browser cookies
+    res.cookie("accessToken", accessToken, {
+        ...defaultCookieOptions,
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    // Storage of refreshToken in browser cookies
+    res.cookie("refreshToken", refreshToken, {
+        ...defaultCookieOptions,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "User Login Successful",
+        data: { accessToken, refreshToken },
     });
 });
 
@@ -117,6 +161,7 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
 export const authController = {
     registerUser,
     verifyEmail,
+    googleLogin,
     loginUser,
     getProfile,
     loginUserWithRefreshToken,
