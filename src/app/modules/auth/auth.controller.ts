@@ -150,6 +150,53 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// ================================================================
+// A function to reset password request for user
+// ================================================================
+const forgetPassword = catchAsync(async (req: Request, res: Response) => {
+    // Will be updated during front end development
+    const payload = req.body;
+
+    // register and fetch registered userdata from database
+    await authService.forgetPassword(payload);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.OK,
+        message: "OTP sent to email for verification",
+        data: null,
+    });
+});
+
+// ================================================================
+// A function to verify email for the newly registered user
+// ================================================================
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+    const payload = req.body;
+
+    const { accessToken, refreshToken } =
+        await authService.resetPassword(payload);
+
+    // Storage of accessToken in browser cookies
+    res.cookie("accessToken", accessToken, {
+        ...defaultCookieOptions,
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    // Storage of refreshToken in browser cookies
+    res.cookie("refreshToken", refreshToken, {
+        ...defaultCookieOptions,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpstatus.CREATED,
+        message: "Password Reset Successful.",
+        data: { accessToken, refreshToken },
+    });
+});
+
 // const registerUser = catchAsync(async (async (req: Request, res: Response) => {});
 // const registerUser = catchAsync(async (async (req: Request, res: Response) => {});
 
@@ -160,4 +207,6 @@ export const authController = {
     loginUser,
     getProfile,
     loginUserWithRefreshToken,
+    forgetPassword,
+    resetPassword,
 };

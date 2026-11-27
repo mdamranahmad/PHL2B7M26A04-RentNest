@@ -2,9 +2,12 @@ import config from "../../config";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middlewares/appError";
 import {
+    IForgetPassword,
     IGoogleLoginPayload,
     ILoginUser,
+    IRedisForgetPasswordPayload,
     IRedisRegisterPayload,
+    IResetPassword,
     IUserRegisterPayload,
     IVerifyEmail,
 } from "./auth.interface";
@@ -101,7 +104,7 @@ const verifyEmail = async (payload: IVerifyEmail) => {
 
     // Checks if the user already exists in the system
     const isUserExists = await prisma.user.findUnique({
-        where: { email: payload.email },
+        where: { email },
         select: { id: true, email: true },
     });
 
@@ -407,6 +410,7 @@ const loginUserWithRefreshToken = async (token: string) => {
             isDeleted: true,
         },
     });
+
     if (!user) {
         throw new AppError(httpStatus.BAD_REQUEST, "user does not exists!");
     }
@@ -452,6 +456,211 @@ const getProfile = async (userId: string) => {
     return user;
 };
 
+// ================================================================
+// A function to reset password request for user
+// ================================================================
+const forgetPassword = async (payload: IForgetPassword) => {
+    // Striping password and relations which are unavailale during registration from payload
+    const { email } = payload;
+
+    // Checks if the user already exists in the system
+    const isUserExists = await prisma.user.findUnique({
+        where: { email: payload.email },
+        select: {
+            id: true,
+            email: true,
+            status: true,
+            isDeleted: true,
+            emailVerified: true,
+            googleId: true,
+            authProvider: true,
+        },
+    });
+
+    if (!isUserExists) {
+        throw new AppError(httpStatus.BAD_REQUEST, "user does not exists!");
+    }
+
+    // Check if the user has proper access
+    if (isUserExists.status === "BANNED") {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Suspended!");
+    }
+
+    if (isUserExists.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Terminated!");
+    }
+
+    if (!isUserExists.emailVerified) {
+        throw new AppError(httpStatus.FORBIDDEN, "Email Not Verified!");
+    }
+
+    if (
+        isUserExists.googleId &&
+        isUserExists.authProvider === AuthProvider.GOOGLE
+    ) {
+        throw new AppError(
+            httpStatus.FORBIDDEN,
+            "User Has Account With Google!",
+        );
+    }
+
+    // // Register user into the system
+    // const registeredUser = await prisma.user.create({
+    //     data: { ...userPayload, passwordHash },
+    // });
+
+    // Cache user data in redis for email verification
+    const redisPayloadKey = `forget-password-payload: ${isUserExists.email}`;
+    const otpValue = crypto.randomInt(100000, 1000000).toString();
+    const redisPayload = { email, otpValue };
+
+    if (config.node_env === "development") {
+        console.log(`${redisPayload.email}: ${otpValue}`);
+    }
+
+    await redisClient.set(redisPayloadKey, JSON.stringify(redisPayload), {
+        expiration: {
+            type: "EX",
+            value: 60 * 5,
+        },
+    });
+
+    const templatePath = path.join(
+        process.cwd(),
+        "src/app/templates/forget-password.ejs",
+    );
+
+    const html = await ejs.renderFile(templatePath, {
+        appName: "RentNest",
+        otpValue,
+        expiresIn: "5 Minutes",
+        supportEmail: "support@rentnest.com",
+        resetUrl: "#",
+    });
+
+    await transporter.sendMail({
+        from: config.email_sender,
+        to: email,
+        subject: "Password Reset Request",
+        html,
+    });
+
+    return null;
+};
+
+// ================================================================
+// A function to verify email and reset password for user
+// ================================================================
+const resetPassword = async (payload: IResetPassword) => {
+    const { email, otpValue, password } = payload;
+
+    // Checks if the user already exists in the system
+    const isUserExists = await prisma.user.findUnique({
+        where: { email },
+        select: {
+            id: true,
+            email: true,
+            status: true,
+            isDeleted: true,
+            emailVerified: true,
+            googleId: true,
+            authProvider: true,
+        },
+    });
+
+    if (!isUserExists) {
+        throw new AppError(httpStatus.BAD_REQUEST, "user does not exists!");
+    }
+
+    // Check if the user has proper access
+    if (isUserExists.status === "BANNED") {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Suspended");
+    }
+
+    if (isUserExists.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Terminated");
+    }
+
+    if (!isUserExists.emailVerified) {
+        throw new AppError(httpStatus.FORBIDDEN, "Email Not Verified!");
+    }
+
+    if (
+        isUserExists.googleId &&
+        isUserExists.authProvider === AuthProvider.GOOGLE
+    ) {
+        throw new AppError(
+            httpStatus.FORBIDDEN,
+            "User Has Account With Google!",
+        );
+    }
+
+    // Create password hash for security concern
+    const passwordHash = await bcrypt.hash(
+        password,
+        Number(config.bcrypt_salt_rounds),
+    );
+
+    // Check user data in redis for email verification
+    const redisPayloadKey = `forget-password-payload: ${isUserExists.email}`;
+
+    const redisPayloadJson = await redisClient.get(redisPayloadKey);
+
+    if (!redisPayloadJson) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Something went wrong! Please register again",
+        );
+    }
+
+    const redisPayload: IRedisForgetPasswordPayload =
+        JSON.parse(redisPayloadJson);
+
+    if (redisPayload.otpValue !== otpValue) {
+        throw new AppError(httpStatus.BAD_REQUEST, "OTP does not match!");
+    }
+
+    const user = await prisma.user.update({
+        where: { email: isUserExists.email },
+        data: {
+            passwordHash: passwordHash,
+        },
+        select: { id: true, name: true, email: true, role: true },
+    });
+
+    await redisClient.del(redisPayloadKey);
+
+    const templatePath = path.join(
+        process.cwd(),
+        "src/app/templates/reset-password.ejs",
+    );
+
+    const html = await ejs.renderFile(templatePath, {
+        appName: "RentNest",
+        name: user.name,
+        supportEmail: "support@rentnest.com",
+    });
+
+    await transporter.sendMail({
+        from: config.email_sender,
+        to: user.email,
+        subject: "Your Password Has Been Reset",
+        html,
+    });
+
+    const tokenPayload = {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+    };
+
+    const { accessToken, refreshToken } =
+        accessRefreshTokenGenerate(tokenPayload);
+
+    return { accessToken, refreshToken };
+};
+
 export const authService = {
     registerUser,
     verifyEmail,
@@ -459,4 +668,6 @@ export const authService = {
     loginUser,
     getProfile,
     loginUserWithRefreshToken,
+    forgetPassword,
+    resetPassword,
 };

@@ -41,3 +41,18 @@ export interface ILoginUser {
 export interface IGoogleLoginPayload {
     googleIdToken: string;
 }
+
+export interface IForgetPassword {
+    email: string;
+}
+
+export interface IRedisForgetPasswordPayload {
+    email: string;
+    otpValue: string;
+}
+
+export interface IResetPassword {
+    email: string;
+    otpValue: string;
+    password: string;
+}

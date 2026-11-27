@@ -30,5 +30,15 @@ router.get(
     auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
     authController.getProfile,
 );
+router.post(
+    "/forget-password",
+    validateResquest(UserValidation.ForgetPasswordZSchema),
+    authController.forgetPassword,
+);
+router.post(
+    "/reset-password",
+    validateResquest(UserValidation.ResetPasswordZSchema),
+    authController.resetPassword,
+);
 
 export const authRoutes = router;
