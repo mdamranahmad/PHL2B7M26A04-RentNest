@@ -93,27 +93,24 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 
     // Storage of accessToken in browser cookies
     res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: config.node_env === "production",
-        sameSite: "lax",
+        ...defaultCookieOptions,
         maxAge: 24 * 60 * 60 * 1000,
     });
 
     // Storage of refreshToken in browser cookies
     res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: config.node_env === "production",
-        sameSite: "lax",
+        ...defaultCookieOptions,
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     sendResponse(res, {
         success: true,
         statusCode: httpstatus.OK,
-        message: "User Login Successfull",
+        message: "User Login Successful",
         data: { accessToken, refreshToken },
     });
 });
+
 // ================================================================
 // A function to login user with refresh token into the system
 // ================================================================
@@ -126,16 +123,14 @@ const loginUserWithRefreshToken = catchAsync(
 
         // Storage of accessToken in browser cookies
         res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: config.node_env === "production",
-            sameSite: "lax",
+            ...defaultCookieOptions,
             maxAge: 24 * 60 * 60 * 1000,
         });
 
         sendResponse(res, {
             success: true,
             statusCode: httpstatus.OK,
-            message: "User Login Successfull",
+            message: "User Login Successful",
             data: { accessToken },
         });
     },

@@ -56,7 +56,7 @@ const registerUser = async (payload: IUserRegisterPayload) => {
 
     // Cache user data in redis for email verification
     const redisPayloadKey = `registration-payload: ${email}`;
-    const otpValue = crypto.randomInt(100000, 1000000);
+    const otpValue = crypto.randomInt(100000, 1000000).toString();
     const redisPayload = { name, email, passwordHash, otpValue };
 
     if (config.node_env === "development") {
@@ -327,9 +327,26 @@ const loginUser = async (payload: ILoginUser) => {
     const { email, password } = payload;
 
     // Check if the user exists
-    const user = await prisma.user.findUniqueOrThrow({
+    const user = await prisma.user.findUnique({
         where: { email },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            passwordHash: true,
+            role: true,
+            isDeleted: true,
+            status: true,
+        },
     });
+
+    if (!user) {
+        throw new AppError(httpStatus.BAD_REQUEST, "user does not exists!");
+    }
+
+    if (!user.passwordHash) {
+        throw new AppError(httpStatus.BAD_REQUEST, "user does not exists!");
+    }
 
     // Check if the User have proper credentials
     const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
@@ -343,26 +360,19 @@ const loginUser = async (payload: ILoginUser) => {
         throw new AppError(httpStatus.FORBIDDEN, "User Account Suspended");
     }
 
+    if (user.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Terminated");
+    }
+
     const tokenPayload = {
-        id: user.id,
+        userId: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
     };
 
-    // Generation of Access Token
-    const accessToken = jwtUtils.createToken(
-        tokenPayload,
-        config.jwt_secret_key,
-        config.jwt_secret_key_expires_in as SignOptions,
-    );
-
-    // Generation of Refresh Token
-    const refreshToken = jwtUtils.createToken(
-        tokenPayload,
-        config.jwt_refresh_secret_key,
-        config.jwt_refresh_secret_key_expires_in as SignOptions,
-    );
+    const { accessToken, refreshToken } =
+        accessRefreshTokenGenerate(tokenPayload);
 
     return { accessToken, refreshToken };
 };
@@ -388,11 +398,17 @@ const loginUserWithRefreshToken = async (token: string) => {
             email,
             role,
         },
-        select: { id: true, name: true, email: true, role: true, status: true },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true,
+            isDeleted: true,
+        },
     });
-
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "User Does Not Exists");
+        throw new AppError(httpStatus.BAD_REQUEST, "user does not exists!");
     }
 
     // Check if the user has proper access
@@ -400,19 +416,19 @@ const loginUserWithRefreshToken = async (token: string) => {
         throw new AppError(httpStatus.FORBIDDEN, "User Account Suspended");
     }
 
+    if (user.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, "User Account Terminated");
+    }
+
     const tokenPayload = {
-        id: user.id,
+        userId: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
     };
 
     // Generation of Access Token
-    const accessToken = jwtUtils.createToken(
-        tokenPayload,
-        config.jwt_secret_key,
-        config.jwt_secret_key_expires_in as SignOptions,
-    );
+    const { accessToken } = accessRefreshTokenGenerate(tokenPayload);
 
     return { accessToken };
 };
@@ -429,10 +445,8 @@ const getProfile = async (userId: string) => {
             passwordHash: true,
         },
         include: {
-            properties: true,
-            landLordRequests: true,
-            tenantRequests: true,
-            reviews: true,
+            landLord: true,
+            tenant: true,
         },
     });
     return user;

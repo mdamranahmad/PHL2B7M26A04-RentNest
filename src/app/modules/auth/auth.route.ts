@@ -12,9 +12,18 @@ router.post(
     validateResquest(UserValidation.UserRegistrationZSchema),
     authController.registerUser,
 );
-router.post("/verify-email", authController.verifyEmail);
+router.post(
+    "/verify-email",
+    validateResquest(UserValidation.EmailVerificationZSchema),
+    authController.verifyEmail,
+);
+
 router.post("/google", authController.googleLogin);
-router.post("/login", authController.loginUser);
+router.post(
+    "/login",
+    validateResquest(UserValidation.UserLoginZSchema),
+    authController.loginUser,
+);
 router.post("/refresh-login", authController.loginUserWithRefreshToken);
 router.get(
     "/me",
